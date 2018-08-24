@@ -157,6 +157,15 @@ pub mod __default_lib_allocator {
         System.alloc(layout)
     }
 
+    // Peiming Liu
+    // extend it to allow alloc in unsafe region.
+    #[no_mangle]
+    #[rustc_std_internal_symbol]
+    pub unsafe extern fn __rdl_unsafe_alloc(size: usize, align: usize) -> *mut u8 {
+        let layout = Layout::from_size_align_unchecked(size, align);
+        System.alloc(layout)
+    }
+
     #[no_mangle]
     #[rustc_std_internal_symbol]
     pub unsafe extern fn __rdl_dealloc(ptr: *mut u8,

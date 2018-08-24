@@ -24,6 +24,10 @@ extern "Rust" {
     #[allocator]
     #[rustc_allocator_nounwind]
     fn __rust_alloc(size: usize, align: usize) -> *mut u8;
+    // Peiming Liu
+    // This is to invoke allocator to allocate memory in unsafe region
+    #[rustc_allocator_nounwind]
+    fn __rust_unsafe_alloc(size: usize, align: usize) -> *mut u8;
     #[rustc_allocator_nounwind]
     fn __rust_dealloc(ptr: *mut u8, size: usize, align: usize);
     #[rustc_allocator_nounwind]
@@ -77,6 +81,15 @@ pub struct Global;
 pub unsafe fn alloc(layout: Layout) -> *mut u8 {
     __rust_alloc(layout.size(), layout.align())
 }
+
+// Peiming Liu
+// Invoke unsafe allocator interface, this should be redirect to __r**_unsafe_alloc
+#[stable(feature = "global_alloc", since = "1.28.0")]
+#[inline]
+pub unsafe fn unsafe_alloc(layout: Layout) -> *mut u8 {
+    __rust_unsafe_alloc(layout.size(), layout.align())
+}
+
 
 /// Deallocate memory with the global allocator.
 ///
@@ -152,6 +165,11 @@ unsafe impl Alloc for Global {
     #[inline]
     unsafe fn alloc(&mut self, layout: Layout) -> Result<NonNull<u8>, AllocErr> {
         NonNull::new(alloc(layout)).ok_or(AllocErr)
+    }
+
+    #[inline]
+    unsafe fn unsafe_alloc(&mut self, layout: Layout) -> Result<NonNull<u8>, AllocErr> {
+        NonNull::new(unsafe_alloc(layout)).ok_or(AllocErr)
     }
 
     #[inline]

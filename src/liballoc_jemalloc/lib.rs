@@ -97,6 +97,14 @@ mod contents {
         ptr
     }
 
+    // Peiming Liu
+    // just redirect it to normal call
+    #[no_mangle]
+    #[rustc_std_internal_symbol]
+    pub unsafe extern fn __rde_unsafe_alloc(size: usize, align: usize) -> *mut u8 {
+        __rde_alloc(size, align)
+    }
+
     #[no_mangle]
     #[rustc_std_internal_symbol]
     pub unsafe extern fn __rde_dealloc(ptr: *mut u8,

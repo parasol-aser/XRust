@@ -710,6 +710,12 @@ pub unsafe trait Alloc {
     /// [`handle_alloc_error`]: ../../alloc/alloc/fn.handle_alloc_error.html
     unsafe fn alloc(&mut self, layout: Layout) -> Result<NonNull<u8>, AllocErr>;
 
+    // Peiming Liu
+    // By default, does not support unsafe alloc
+    unsafe fn unsafe_alloc(&mut self, layout: Layout) -> Result<NonNull<u8>, AllocErr> {
+        self.alloc(layout)
+    }
+
     /// Deallocate the memory referenced by `ptr`.
     ///
     /// # Safety
