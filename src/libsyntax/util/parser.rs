@@ -248,6 +248,8 @@ pub enum ExprPrecedence {
     AssignOp,
 
     Box,
+    // Peiming Liu
+    UnsafeBox,
     AddrOf,
     Unary,
 
@@ -305,6 +307,7 @@ impl ExprPrecedence {
 
             // Unary, prefix
             ExprPrecedence::Box |
+            ExprPrecedence::UnsafeBox |
             ExprPrecedence::AddrOf |
             ExprPrecedence::Unary => PREC_PREFIX,
 

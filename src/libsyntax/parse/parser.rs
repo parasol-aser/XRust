@@ -3754,15 +3754,7 @@ impl<'a> Parser<'a> {
             (pat, fieldname, false)
         } else {
             // Parsing a pattern of the form "(box) (ref) (mut) fieldname"
-            // Or parsing a pattern of the form "(unsafe_box) (ref) (mut) fieldname"
-            // Peiming Liu: Need to parse UnsafeBox here
             let is_box = self.eat_keyword(keywords::Box);
-            let is_unsafe_box;
-            if !is_box {
-                is_unsafe_box = self.eat_keyword(keywords::UnsafeBox);
-            } else {
-                is_unsafe_box = false;
-            }
 
             let boxed_span = self.span;
             let is_ref = self.eat_keyword(keywords::Ref);
@@ -3786,12 +3778,6 @@ impl<'a> Parser<'a> {
                 P(Pat {
                     id: ast::DUMMY_NODE_ID,
                     node: PatKind::Box(fieldpat),
-                    span: lo.to(hi),
-                })
-            } else if is_unsafe_box {
-                P(Pat {
-                    id: ast::DUMMY_NODE_ID,
-                    node: PatKind::UnsafeBox(fieldpat),  // Peiming Liu, change it to UnsafeBox pattern
                     span: lo.to(hi),
                 })
             } else {
@@ -4060,9 +4046,6 @@ impl<'a> Parser<'a> {
                 // Parse box pat
                 let subpat = self.parse_pat_with_range_pat(false)?;
                 pat = PatKind::Box(subpat);
-            } else if self.eat_keyword(keywords::UnsafeBox) {
-                let subpat = self.parse_pat_with_range_pat(false)?;
-                pat = PatKind::UnsafeBox(subpat);             //Peiming Liu change it to PatKind::UnsafeBox(subpat)
             } else if self.token.is_ident() && !self.token.is_reserved_ident() &&
                       self.parse_as_ident() {
                 // Parse ident @ pat

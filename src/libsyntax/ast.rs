@@ -969,6 +969,7 @@ impl Expr {
     pub fn precedence(&self) -> ExprPrecedence {
         match self.node {
             ExprKind::Box(_) => ExprPrecedence::Box,
+            ExprKind::UnsafeBox(_) => ExprPrecedence::UnsafeBox,
             ExprKind::ObsoleteInPlace(..) => ExprPrecedence::ObsoleteInPlace,
             ExprKind::Array(_) => ExprPrecedence::Array,
             ExprKind::Call(..) => ExprPrecedence::Call,

@@ -2071,6 +2071,10 @@ impl<'a> State<'a> {
                 self.word_space("box")?;
                 self.print_expr_maybe_paren(expr, parser::PREC_PREFIX)?;
             }
+            ast::ExprKind::UnsafeBox(ref expr) => {
+                self.word_space("unsafe_box")?;
+                self.print_expr_maybe_paren(expr, parser::PREC_PREFIX)?;
+            }
             ast::ExprKind::ObsoleteInPlace(ref place, ref expr) => {
                 let prec = AssocOp::ObsoleteInPlace.precedence() as i8;
                 self.print_expr_maybe_paren(place, prec + 1)?;

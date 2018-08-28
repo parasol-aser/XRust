@@ -660,7 +660,8 @@ pub fn walk_expr<'a, V: Visitor<'a>>(visitor: &mut V, expression: &'a Expr) {
         visitor.visit_attribute(attr);
     }
     match expression.node {
-        ExprKind::Box(ref subexpression) => {
+        ExprKind::Box(ref subexpression) |
+        ExprKind::UnsafeBox(ref subexpression)=> {
             visitor.visit_expr(subexpression)
         }
         ExprKind::ObsoleteInPlace(ref place, ref subexpression) => {

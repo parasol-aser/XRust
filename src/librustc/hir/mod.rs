@@ -1310,6 +1310,7 @@ impl Expr {
     pub fn precedence(&self) -> ExprPrecedence {
         match self.node {
             ExprKind::Box(_) => ExprPrecedence::Box,
+            ExprKind::UnsafeBox(_) => ExprPrecedence::UnsafeBox,
             ExprKind::Array(_) => ExprPrecedence::Array,
             ExprKind::Call(..) => ExprPrecedence::Call,
             ExprKind::MethodCall(..) => ExprPrecedence::MethodCall,
@@ -1352,6 +1353,8 @@ impl fmt::Debug for Expr {
 pub enum ExprKind {
     /// A `box x` expression.
     Box(P<Expr>),
+    /// Peiming: A `unsafe_box x` expression
+    UnsafeBox(P<Expr>),
     /// An array (`[a, b, c, d]`)
     Array(HirVec<Expr>),
     /// A function call

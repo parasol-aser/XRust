@@ -2411,6 +2411,7 @@ impl<'a, 'gcx, 'tcx> FnCtxt<'a, 'gcx, 'tcx> {
             hir::ExprKind::Lit(_) |
             hir::ExprKind::Unary(..) |
             hir::ExprKind::Box(..) |
+            hir::ExprKind::UnsafeBox(..) |
             hir::ExprKind::AddrOf(..) |
             hir::ExprKind::Binary(..) |
             hir::ExprKind::Yield(..) |
@@ -3681,7 +3682,8 @@ impl<'a, 'gcx, 'tcx> FnCtxt<'a, 'gcx, 'tcx> {
         let tcx = self.tcx;
         let id = expr.id;
         match expr.node {
-            hir::ExprKind::Box(ref subexpr) => {
+            hir::ExprKind::Box(ref subexpr) |
+            hir::ExprKind::UnsafeBox(ref subexpr) => {    // Peiming Liu : both `unsafe_box` and `box` should produce same type "Box(ty)"
                 let expected_inner = expected.to_option(self).map_or(NoExpectation, |ty| {
                     match ty.sty {
                         ty::TyAdt(def, _) if def.is_box()

@@ -1719,7 +1719,8 @@ impl<'a> Visitor<'a> for PostExpansionVisitor<'a> {
 
     fn visit_expr(&mut self, e: &'a ast::Expr) {
         match e.node {
-            ast::ExprKind::Box(_) => {
+            ast::ExprKind::Box(_) |
+            ast::ExprKind::UnsafeBox(_) => {
                 gate_feature_post!(&self, box_syntax, e.span, EXPLAIN_BOX_SYNTAX);
             }
             ast::ExprKind::Type(..) => {
