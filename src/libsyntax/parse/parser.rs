@@ -2876,6 +2876,12 @@ impl<'a> Parser<'a> {
                 let (span, e) = self.interpolated_or_expr_span(e)?;
                 (lo.to(span), ExprKind::Box(e))
             }
+            token::Ident(..) if self.token.is_keyword(keywords::UnsafeBox) => {
+                self.bump();
+                let e = self.parse_prefix_expr(None);
+                let (span, e) = self.interpolated_or_expr_span(e)?;
+                (lo.to(span), ExprKind::UnsafeBox(e))             // Peiming Liu need add UnsafeBox here
+            }
             token::Ident(..) if self.token.is_ident_named("not") => {
                 // `not` is just an ordinary identifier in Rust-the-language,
                 // but as `rustc`-the-compiler, we can issue clever diagnostics
@@ -3748,7 +3754,16 @@ impl<'a> Parser<'a> {
             (pat, fieldname, false)
         } else {
             // Parsing a pattern of the form "(box) (ref) (mut) fieldname"
+            // Or parsing a pattern of the form "(unsafe_box) (ref) (mut) fieldname"
+            // Peiming Liu: Need to parse UnsafeBox here
             let is_box = self.eat_keyword(keywords::Box);
+            let is_unsafe_box;
+            if !is_box {
+                is_unsafe_box = self.eat_keyword(keywords::UnsafeBox);
+            } else {
+                is_unsafe_box = false;
+            }
+
             let boxed_span = self.span;
             let is_ref = self.eat_keyword(keywords::Ref);
             let is_mut = self.eat_keyword(keywords::Mut);
@@ -3771,6 +3786,12 @@ impl<'a> Parser<'a> {
                 P(Pat {
                     id: ast::DUMMY_NODE_ID,
                     node: PatKind::Box(fieldpat),
+                    span: lo.to(hi),
+                })
+            } else if is_unsafe_box {
+                P(Pat {
+                    id: ast::DUMMY_NODE_ID,
+                    node: PatKind::UnsafeBox(fieldpat),  // Peiming Liu, change it to UnsafeBox pattern
                     span: lo.to(hi),
                 })
             } else {
@@ -4035,10 +4056,13 @@ impl<'a> Parser<'a> {
                 // Parse ref ident @ pat / ref mut ident @ pat
                 let mutbl = self.parse_mutability();
                 pat = self.parse_pat_ident(BindingMode::ByRef(mutbl))?;
-            } else if self.eat_keyword(keywords::Box) {
+            } else if self.eat_keyword(keywords::Box) { // Peiming Liu: need add UnsafeBox here
                 // Parse box pat
                 let subpat = self.parse_pat_with_range_pat(false)?;
                 pat = PatKind::Box(subpat);
+            } else if self.eat_keyword(keywords::UnsafeBox) {
+                let subpat = self.parse_pat_with_range_pat(false)?;
+                pat = PatKind::UnsafeBox(subpat);             //Peiming Liu change it to PatKind::UnsafeBox(subpat)
             } else if self.token.is_ident() && !self.token.is_reserved_ident() &&
                       self.parse_as_ident() {
                 // Parse ident @ pat

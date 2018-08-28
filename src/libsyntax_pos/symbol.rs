@@ -427,6 +427,10 @@ declare_keywords! {
     (57, Dyn,                "dyn")
     (58, Union,              "union")
     (59, Existential,        "existential")
+
+    // Peiming Liu,
+    // keyword to box an object in unsafe region, require lang_item = "exchange_unsafe_alloc" && lang_item = "box_free"
+    (60, UnsafeBox,          "unsafe_box")
 }
 
 impl Symbol {

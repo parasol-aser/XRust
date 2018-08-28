@@ -1029,6 +1029,8 @@ pub enum RangeLimits {
 pub enum ExprKind {
     /// A `box x` expression.
     Box(P<Expr>),
+    /// Peiming Liu: A `unsafe_box x` expression
+    UnsafeBox(P<Expr>),
     /// First expr is the place; second expr is the value.
     ObsoleteInPlace(P<Expr>, P<Expr>),
     /// An array (`[a, b, c, d]`)
