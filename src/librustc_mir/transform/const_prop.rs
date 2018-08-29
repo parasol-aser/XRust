@@ -340,6 +340,7 @@ impl<'b, 'a, 'tcx:'b> ConstPropagator<'b, 'a, 'tcx> {
             Rvalue::Ref(..) |
             Rvalue::Aggregate(..) |
             Rvalue::NullaryOp(NullOp::Box, _) |
+            Rvalue::NullaryOp(NullOp::UnsafeBox, _) |
             Rvalue::Discriminant(..) => None,
 
             Rvalue::Cast(kind, ref operand, _) => {

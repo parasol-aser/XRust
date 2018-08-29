@@ -496,7 +496,9 @@ impl FunctionCx<'a, 'll, 'tcx> {
                 })
             }
 
-            mir::Rvalue::NullaryOp(mir::NullOp::Box, content_ty) => {
+            // TODO: Peiming Liu: Insert code generation for unsafe_box here!!!
+            mir::Rvalue::NullaryOp(mir::NullOp::Box, content_ty) |
+            mir::Rvalue::NullaryOp(mir::NullOp::UnsafeBox, content_ty) => {
                 let content_ty: Ty<'tcx> = self.monomorphize(&content_ty);
                 let (size, align) = bx.cx.size_and_align_of(content_ty);
                 let llsize = C_usize(bx.cx, size.bytes());

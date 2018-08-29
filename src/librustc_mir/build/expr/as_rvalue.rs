@@ -89,8 +89,7 @@ impl<'a, 'gcx, 'tcx> Builder<'a, 'gcx, 'tcx> {
                 }
                 block.and(Rvalue::UnaryOp(op, arg))
             }
-            ExprKind::Box { value } |
-            ExprKind::UnsafeBox{ value }=> {
+            ExprKind::Box { value } => {
                 let value = this.hir.mirror(value);
                 // The `Box<T>` temporary created here is not a part of the HIR,
                 // and therefore is not considered during generator OIBIT
@@ -110,6 +109,32 @@ impl<'a, 'gcx, 'tcx> Builder<'a, 'gcx, 'tcx> {
 
                 // malloc some memory of suitable type (thus far, uninitialized):
                 let box_ = Rvalue::NullaryOp(NullOp::Box, value.ty);
+                this.cfg.push_assign(block, source_info, &Place::Local(result), box_);
+
+                // initialize the box contents:
+                unpack!(block = this.into(&Place::Local(result).deref(), block, value));
+                block.and(Rvalue::Use(Operand::Move(Place::Local(result))))
+            }
+            ExprKind::UnsafeBox { value } => {
+                let value = this.hir.mirror(value);
+                // The `Box<T>` temporary created here is not a part of the HIR,
+                // and therefore is not considered during generator OIBIT
+                // determination. See the comment about `box` at `yield_in_scope`.
+                let result = this.local_decls.push(
+                    LocalDecl::new_internal(expr.ty, expr_span));
+                this.cfg.push(block, Statement {
+                    source_info,
+                    kind: StatementKind::StorageLive(result)
+                });
+                if let Some(scope) = scope {
+                    // schedule a shallow free of that memory, lest we unwind:
+                    this.schedule_drop_storage_and_value(
+                        expr_span, scope, &Place::Local(result), value.ty,
+                    );
+                }
+
+                // malloc some memory of suitable type (thus far, uninitialized):
+                let box_ = Rvalue::NullaryOp(NullOp::UnsafeBox, value.ty);
                 this.cfg.push_assign(block, source_info, &Place::Local(result), box_);
 
                 // initialize the box contents:

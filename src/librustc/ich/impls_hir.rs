@@ -544,6 +544,7 @@ impl<'a> HashStable<StableHashingContext<'a>> for hir::Expr {
 
 impl_stable_hash_for!(enum hir::ExprKind {
     Box(sub),
+    UnsafeBox(sub),
     Array(subs),
     Call(callee, args),
     MethodCall(segment, span, args),

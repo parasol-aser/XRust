@@ -765,7 +765,8 @@ impl<'a, 'tcx> Visitor<'tcx> for Qualifier<'a, 'tcx, 'tcx> {
                 }
             }
 
-            Rvalue::NullaryOp(NullOp::Box, _) => {
+            Rvalue::NullaryOp(NullOp::Box, _) |
+            Rvalue::NullaryOp(NullOp::UnsafeBox, _) => {
                 self.add(Qualif::NOT_CONST);
                 if self.mode != Mode::Fn {
                     let mut err = struct_span_err!(self.tcx.sess, self.span, E0010,

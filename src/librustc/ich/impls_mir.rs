@@ -525,6 +525,7 @@ impl_stable_hash_for!(enum mir::UnOp {
 
 impl_stable_hash_for!(enum mir::NullOp {
     Box,
+    UnsafeBox,
     SizeOf
 });
 

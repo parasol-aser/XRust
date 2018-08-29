@@ -332,7 +332,8 @@ impl<'b, 'a, 'gcx, 'tcx> Gatherer<'b, 'a, 'gcx, 'tcx> {
             Rvalue::Discriminant(..) |
             Rvalue::Len(..) |
             Rvalue::NullaryOp(NullOp::SizeOf, _) |
-            Rvalue::NullaryOp(NullOp::Box, _) => {
+            Rvalue::NullaryOp(NullOp::Box, _) |
+            Rvalue::NullaryOp(NullOp::UnsafeBox, _) => {
                 // This returns an rvalue with uninitialized contents. We can't
                 // move out of it here because it is an rvalue - assignments always
                 // completely initialize their place.

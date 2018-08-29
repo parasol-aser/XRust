@@ -206,7 +206,8 @@ impl<'tcx> Rvalue<'tcx> {
                     tcx.types.u8
                 }
             }
-            Rvalue::NullaryOp(NullOp::Box, t) => tcx.mk_box(t),
+            Rvalue::NullaryOp(NullOp::Box, t) |
+            Rvalue::NullaryOp(NullOp::UnsafeBox, t) => tcx.mk_box(t),   //Peiming Liu `unsafe_box ty` create the same type as `box ty`
             Rvalue::NullaryOp(NullOp::SizeOf, _) => tcx.types.usize,
             Rvalue::Aggregate(ref ak, ref ops) => {
                 match **ak {
@@ -235,7 +236,8 @@ impl<'tcx> Rvalue<'tcx> {
     /// whether its only shallowly initialized (`Rvalue::Box`).
     pub fn initialization_state(&self) -> RvalueInitializationState {
         match *self {
-            Rvalue::NullaryOp(NullOp::Box, _) => RvalueInitializationState::Shallow,
+            Rvalue::NullaryOp(NullOp::Box, _) |
+            Rvalue::NullaryOp(NullOp::UnsafeBox, _)=> RvalueInitializationState::Shallow,
             _ => RvalueInitializationState::Deep
         }
     }

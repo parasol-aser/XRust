@@ -837,7 +837,11 @@ def bootstrap(help_triggered):
     env["BUILD_DIR"] = build.build_dir
     env["RUSTC_BOOTSTRAP"] = '1'
     env["CARGO"] = build.cargo()
+    print("using cargo:")
+    print(build.cargo())
     env["RUSTC"] = build.rustc()
+    print("using rustc:")
+    print(build.rustc())
     run(args, env=env, verbose=build.verbose)
 
 

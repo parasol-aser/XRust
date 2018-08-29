@@ -307,6 +307,7 @@ language_item_table! {
     PanicImplLangItem,               "panic_impl",              panic_impl;
 
     ExchangeMallocFnLangItem,        "exchange_malloc",         exchange_malloc_fn;
+    UnsafeExchangeMallocFnLangItem,  "unsafe_exchange_malloc",  unsafe_exchange_malloc_fn;
     BoxFreeFnLangItem,               "box_free",                box_free_fn;
     DropInPlaceFnLangItem,           "drop_in_place",           drop_in_place_fn;
     OomLangItem,                     "oom",                     oom;

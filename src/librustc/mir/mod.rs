@@ -2062,6 +2062,10 @@ pub enum NullOp {
     SizeOf,
     /// Create a new uninitialized box for a value of that type
     Box,
+    /// Peiming Liu
+    /// Create a new uninitialized box for a value of that type (via unsafe interface)
+    /// Maybe it is better to make extend Box to Box(bool) to support this Op.
+    UnsafeBox,
 }
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq, RustcEncodable, RustcDecodable)]

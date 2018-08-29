@@ -791,8 +791,8 @@ impl<'a, 'mir, 'tcx: 'mir, M: Machine<'mir, 'tcx>> EvalContext<'a, 'mir, 'tcx, M
                 };
                 self.write_value(valty, dest)?;
             }
-
-            NullaryOp(mir::NullOp::Box, ty) => {
+            // Peiming Liu, no difference between box and unsafe_box when doing interpretation
+            NullaryOp(mir::NullOp::Box, ty) | NullaryOp(mir::NullOp::UnsafeBox, ty) => {
                 let ty = self.monomorphize(ty, self.substs());
                 M::box_alloc(self, ty, dest)?;
             }
