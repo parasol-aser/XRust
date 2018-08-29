@@ -384,6 +384,7 @@ impl<'a, 'tcx> CFGBuilder<'a, 'tcx> {
             }
 
             hir::ExprKind::Box(ref e) |
+            hir::ExprKind::UnsafeBox(ref e) |
             hir::ExprKind::AddrOf(_, ref e) |
             hir::ExprKind::Cast(ref e, _) |
             hir::ExprKind::Type(ref e, _) |

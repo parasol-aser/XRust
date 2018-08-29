@@ -974,7 +974,8 @@ pub fn walk_expr<'v, V: Visitor<'v>>(visitor: &mut V, expression: &'v Expr) {
     visitor.visit_id(expression.id);
     walk_list!(visitor, visit_attribute, expression.attrs.iter());
     match expression.node {
-        ExprKind::Box(ref subexpression) => {
+        ExprKind::Box(ref subexpression) |
+        ExprKind::UnsafeBox(ref subexpression)=> {
             visitor.visit_expr(subexpression)
         }
         ExprKind::Array(ref subexpressions) => {

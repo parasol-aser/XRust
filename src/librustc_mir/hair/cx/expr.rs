@@ -670,6 +670,11 @@ fn make_mirror_unadjusted<'a, 'gcx, 'tcx>(cx: &mut Cx<'a, 'gcx, 'tcx>,
                 value: value.to_ref(),
             }
         }
+        hir::ExprKind::UnsafeBox(ref value) => {
+            ExprKind::UnsafeBox {
+                value: value.to_ref(),
+            }
+        }
         hir::ExprKind::Array(ref fields) => ExprKind::Array { fields: fields.to_ref() },
         hir::ExprKind::Tup(ref fields) => ExprKind::Tuple { fields: fields.to_ref() },
 

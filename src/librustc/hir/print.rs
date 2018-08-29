@@ -1327,6 +1327,10 @@ impl<'a> State<'a> {
                 self.word_space("box")?;
                 self.print_expr_maybe_paren(expr, parser::PREC_PREFIX)?;
             }
+            hir::ExprKind::UnsafeBox(ref expr) => {
+                self.word_space("unsafe_box")?;
+                self.print_expr_maybe_paren(expr, parser::PREC_PREFIX)?;
+            }
             hir::ExprKind::Array(ref exprs) => {
                 self.print_expr_vec(exprs)?;
             }

@@ -110,6 +110,7 @@ impl<'a, 'gcx, 'tcx> Builder<'a, 'gcx, 'tcx> {
             ExprKind::Binary { .. } |
             ExprKind::LogicalOp { .. } |
             ExprKind::Box { .. } |
+            ExprKind::UnsafeBox { .. } |
             ExprKind::Cast { .. } |
             ExprKind::Use { .. } |
             ExprKind::NeverToAny { .. } |

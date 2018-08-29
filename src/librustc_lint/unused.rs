@@ -464,7 +464,7 @@ impl LintPass for UnusedAllocation {
 impl<'a, 'tcx> LateLintPass<'a, 'tcx> for UnusedAllocation {
     fn check_expr(&mut self, cx: &LateContext, e: &hir::Expr) {
         match e.node {
-            hir::ExprKind::Box(_) => {}
+            hir::ExprKind::Box(_) | hir::ExprKind::UnsafeBox(_)=> {}
             _ => return,
         }
 

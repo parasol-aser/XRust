@@ -323,6 +323,7 @@ impl<'a, 'gcx, 'tcx> Builder<'a, 'gcx, 'tcx> {
             ExprKind::Unary { .. } |
             ExprKind::Binary { .. } |
             ExprKind::Box { .. } |
+            ExprKind::UnsafeBox { .. } |
             ExprKind::Cast { .. } |
             ExprKind::Use { .. } |
             ExprKind::ReifyFnPointer { .. } |

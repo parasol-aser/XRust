@@ -536,7 +536,8 @@ impl<'a, 'gcx, 'tcx> ExprUseVisitor<'a, 'gcx, 'tcx> {
                 self.walk_captures(expr, fn_decl_span)
             }
 
-            hir::ExprKind::Box(ref base) => {
+            hir::ExprKind::Box(ref base) |
+            hir::ExprKind::UnsafeBox(ref base) => {
                 self.consume_expr(&base);
             }
 

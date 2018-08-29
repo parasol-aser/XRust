@@ -520,6 +520,7 @@ fn visit_expr<'a, 'tcx>(ir: &mut IrMaps<'a, 'tcx>, expr: &'tcx Expr) {
       hir::ExprKind::Repeat(..) |
       hir::ExprKind::InlineAsm(..) |
       hir::ExprKind::Box(..) |
+      hir::ExprKind::UnsafeBox(..) |
       hir::ExprKind::Yield(..) |
       hir::ExprKind::Type(..) |
       hir::ExprKind::Path(hir::QPath::TypeRelative(..)) => {
@@ -1156,6 +1157,7 @@ impl<'a, 'tcx> Liveness<'a, 'tcx> {
           }
 
           hir::ExprKind::Box(ref e) |
+          hir::ExprKind::UnsafeBox(ref e) |
           hir::ExprKind::AddrOf(_, ref e) |
           hir::ExprKind::Cast(ref e, _) |
           hir::ExprKind::Type(ref e, _) |
@@ -1451,7 +1453,7 @@ fn check_expr<'a, 'tcx>(this: &mut Liveness<'a, 'tcx>, expr: &'tcx Expr) {
       hir::ExprKind::Block(..) | hir::ExprKind::AddrOf(..) |
       hir::ExprKind::Struct(..) | hir::ExprKind::Repeat(..) |
       hir::ExprKind::Closure(..) | hir::ExprKind::Path(_) | hir::ExprKind::Yield(..) |
-      hir::ExprKind::Box(..) | hir::ExprKind::Type(..) => {
+      hir::ExprKind::UnsafeBox(..) | hir::ExprKind::Box(..) | hir::ExprKind::Type(..) => {
         intravisit::walk_expr(this, expr);
       }
     }

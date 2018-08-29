@@ -3512,6 +3512,7 @@ impl<'a> LoweringContext<'a> {
     fn lower_expr(&mut self, e: &Expr) -> hir::Expr {
         let kind = match e.node {
             ExprKind::Box(ref inner) => hir::ExprKind::Box(P(self.lower_expr(inner))),
+            ExprKind::UnsafeBox(ref inner) => hir::ExprKind::UnsafeBox(P(self.lower_expr(inner))),
             ExprKind::ObsoleteInPlace(..) => {
                 self.sess.abort_if_errors();
                 span_bug!(e.span, "encountered ObsoleteInPlace expr during lowering");

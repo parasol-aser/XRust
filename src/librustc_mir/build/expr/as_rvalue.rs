@@ -89,7 +89,8 @@ impl<'a, 'gcx, 'tcx> Builder<'a, 'gcx, 'tcx> {
                 }
                 block.and(Rvalue::UnaryOp(op, arg))
             }
-            ExprKind::Box { value } => {
+            ExprKind::Box { value } |
+            ExprKind::UnsafeBox{ value }=> {
                 let value = this.hir.mirror(value);
                 // The `Box<T>` temporary created here is not a part of the HIR,
                 // and therefore is not considered during generator OIBIT

@@ -335,7 +335,7 @@ fn check_expr_kind<'a, 'tcx>(
     };
 
     let node_result = match e.node {
-        hir::ExprKind::Box(ref expr) => {
+        hir::ExprKind::Box(ref expr) | hir::ExprKind::UnsafeBox(ref expr)=> {
             let _ = v.check_expr(&expr);
             NotPromotable
         }

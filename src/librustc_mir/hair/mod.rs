@@ -147,6 +147,9 @@ pub enum ExprKind<'tcx> {
     Box {
         value: ExprRef<'tcx>,
     },
+    UnsafeBox {
+        value: ExprRef<'tcx>,
+    },
     Call {
         ty: Ty<'tcx>,
         fun: ExprRef<'tcx>,
