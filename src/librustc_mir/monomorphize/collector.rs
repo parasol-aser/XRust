@@ -194,7 +194,7 @@ use rustc::hir::itemlikevisit::ItemLikeVisitor;
 use rustc::hir::map as hir_map;
 use rustc::hir::def_id::DefId;
 use rustc::mir::interpret::{AllocId, ConstValue, ScalarMaybeUndef};
-use rustc::middle::lang_items::{ExchangeMallocFnLangItem, StartFnLangItem};
+use rustc::middle::lang_items::{ExchangeMallocFnLangItem, UnsafeExchangeMallocFnLangItem, StartFnLangItem};
 use rustc::ty::subst::Substs;
 use rustc::ty::{self, TypeFoldable, Ty, TyCtxt, GenericParamDefKind};
 use rustc::ty::adjustment::CustomCoerceUnsized;
@@ -581,16 +581,25 @@ impl<'a, 'tcx> MirVisitor<'tcx> for MirNeighborCollector<'a, 'tcx> {
                     _ => bug!(),
                 }
             }
-
-            // TODO: Peiming Liu, add require for UnsafeExchangeMallocFnLangItem here!
-            mir::Rvalue::NullaryOp(mir::NullOp::Box, _) |
-            mir::Rvalue::NullaryOp(mir::NullOp::UnsafeBox, _) => {
+            mir::Rvalue::NullaryOp(mir::NullOp::Box, _) => {
                 let tcx = self.tcx;
                 let exchange_malloc_fn_def_id = tcx
                     .lang_items()
                     .require(ExchangeMallocFnLangItem)
                     .unwrap_or_else(|e| tcx.sess.fatal(&e));
                 let instance = Instance::mono(tcx, exchange_malloc_fn_def_id);
+                if should_monomorphize_locally(tcx, &instance) {
+                    self.output.push(create_fn_mono_item(instance));
+                }
+            }
+            // Peiming Liu, add require for UnsafeExchangeMallocFnLangItem here!
+            mir::Rvalue::NullaryOp(mir::NullOp::UnsafeBox, _) => {
+                let tcx = self.tcx;
+                let unsafe_exchange_malloc_fn_def_id = tcx
+                    .lang_items()
+                    .require(UnsafeExchangeMallocFnLangItem)
+                    .unwrap_or_else(|e| tcx.sess.fatal(&e));
+                let instance = Instance::mono(tcx, unsafe_exchange_malloc_fn_def_id);
                 if should_monomorphize_locally(tcx, &instance) {
                     self.output.push(create_fn_mono_item(instance));
                 }

@@ -470,6 +470,14 @@ pub unsafe trait GlobalAlloc {
     #[stable(feature = "global_alloc", since = "1.28.0")]
     unsafe fn alloc(&self, layout: Layout) -> *mut u8;
 
+    // Peiming Liu
+    // Unsafe_alloc to redirect to allocator's unsafe_malloc
+    // By default, it is not supported.
+    #[stable(feature = "global_alloc", since = "1.28.0")]
+    unsafe fn unsafe_alloc(&self, layout: Layout) -> *mut u8 {
+        self.alloc(layout)
+    }
+
     /// Deallocate the block of memory at the given `ptr` pointer with the given `layout`.
     ///
     /// # Safety

@@ -28,6 +28,11 @@ pub static ALLOCATOR_METHODS: &[AllocatorMethod] = &[
         output: AllocatorTy::ResultPtr,
     },
     AllocatorMethod {
+        name: "unsafe_alloc",
+        inputs: &[AllocatorTy::Layout],
+        output: AllocatorTy::ResultPtr,
+    },
+    AllocatorMethod {
         name: "dealloc",
         inputs: &[AllocatorTy::Ptr, AllocatorTy::Layout],
         output: AllocatorTy::Unit,

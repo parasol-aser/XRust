@@ -13,7 +13,7 @@ use rustc::ty::{self, Ty};
 use rustc::ty::cast::{CastTy, IntTy};
 use rustc::ty::layout::{self, LayoutOf};
 use rustc::mir;
-use rustc::middle::lang_items::ExchangeMallocFnLangItem;
+use rustc::middle::lang_items::{ ExchangeMallocFnLangItem, UnsafeExchangeMallocFnLangItem };
 use rustc_apfloat::{ieee, Float, Status, Round};
 use std::{u128, i128};
 
@@ -497,8 +497,7 @@ impl FunctionCx<'a, 'll, 'tcx> {
             }
 
             // TODO: Peiming Liu: Insert code generation for unsafe_box here!!!
-            mir::Rvalue::NullaryOp(mir::NullOp::Box, content_ty) |
-            mir::Rvalue::NullaryOp(mir::NullOp::UnsafeBox, content_ty) => {
+            mir::Rvalue::NullaryOp(mir::NullOp::Box, content_ty) => {
                 let content_ty: Ty<'tcx> = self.monomorphize(&content_ty);
                 let (size, align) = bx.cx.size_and_align_of(content_ty);
                 let llsize = C_usize(bx.cx, size.bytes());
@@ -511,6 +510,31 @@ impl FunctionCx<'a, 'll, 'tcx> {
                     Ok(id) => id,
                     Err(s) => {
                         bx.sess().fatal(&format!("allocation of `{}` {}", box_layout.ty, s));
+                    }
+                };
+                let instance = ty::Instance::mono(bx.tcx(), def_id);
+                let r = callee::get_fn(bx.cx, instance);
+                let val = bx.pointercast(bx.call(r, &[llsize, llalign], None), llty_ptr);
+
+                let operand = OperandRef {
+                    val: OperandValue::Immediate(val),
+                    layout: box_layout,
+                };
+                (bx, operand)
+            }
+            mir::Rvalue::NullaryOp(mir::NullOp::UnsafeBox, content_ty) => {
+                let content_ty: Ty<'tcx> = self.monomorphize(&content_ty);
+                let (size, align) = bx.cx.size_and_align_of(content_ty);
+                let llsize = C_usize(bx.cx, size.bytes());
+                let llalign = C_usize(bx.cx, align.abi());
+                let box_layout = bx.cx.layout_of(bx.tcx().mk_box(content_ty));
+                let llty_ptr = box_layout.llvm_type(bx.cx);
+
+                // Allocate space:
+                let def_id = match bx.tcx().lang_items().require(UnsafeExchangeMallocFnLangItem) {
+                    Ok(id) => id,
+                    Err(s) => {
+                        bx.sess().fatal(&format!("unsafe allocation of `{}` {}", box_layout.ty, s));
                     }
                 };
                 let instance = ty::Instance::mono(bx.tcx(), def_id);

@@ -88,6 +88,7 @@ pub unsafe fn alloc(layout: Layout) -> *mut u8 {
 #[inline]
 pub unsafe fn unsafe_alloc(layout: Layout) -> *mut u8 {
     __rust_unsafe_alloc(layout.size(), layout.align())
+    //__rust_alloc(layout.size(), layout.align())
 }
 
 
@@ -204,6 +205,25 @@ unsafe fn exchange_malloc(size: usize, align: usize) -> *mut u8 {
     } else {
         let layout = Layout::from_size_align_unchecked(size, align);
         let ptr = alloc(layout);
+        if !ptr.is_null() {
+            ptr
+        } else {
+            handle_alloc_error(layout)
+        }
+    }
+}
+
+/// The allocator for unique pointers.
+// Peiming: This is used to extend to allocate object in unsafe region
+#[cfg(not(test))]
+#[lang = "unsafe_exchange_malloc"]
+#[inline]
+unsafe fn unsafe_exchange_malloc(size: usize, align: usize) -> *mut u8 {
+    if size == 0 {
+        align as *mut u8
+    } else {
+        let layout = Layout::from_size_align_unchecked(size, align);
+        let ptr = unsafe_alloc(layout);
         if !ptr.is_null() {
             ptr
         } else {
