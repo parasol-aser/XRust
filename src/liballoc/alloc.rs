@@ -167,10 +167,10 @@ unsafe impl Alloc for Global {
         NonNull::new(alloc(layout)).ok_or(AllocErr)
     }
 
-    #[inline]
-    unsafe fn unsafe_alloc(&mut self, layout: Layout) -> Result<NonNull<u8>, AllocErr> {
-        NonNull::new(unsafe_alloc(layout)).ok_or(AllocErr)
-    }
+//    #[inline]
+//    unsafe fn unsafe_alloc(&mut self, layout: Layout) -> Result<NonNull<u8>, AllocErr> {
+//        NonNull::new(unsafe_alloc(layout)).ok_or(AllocErr)
+//    }
 
     #[inline]
     unsafe fn dealloc(&mut self, ptr: NonNull<u8>, layout: Layout) {

@@ -583,7 +583,8 @@ impl<'a, 'tcx> MirVisitor<'tcx> for MirNeighborCollector<'a, 'tcx> {
             }
 
             // TODO: Peiming Liu, add require for UnsafeExchangeMallocFnLangItem here!
-            mir::Rvalue::NullaryOp(mir::NullOp::Box, _) => {
+            mir::Rvalue::NullaryOp(mir::NullOp::Box, _) |
+            mir::Rvalue::NullaryOp(mir::NullOp::UnsafeBox, _) => {
                 let tcx = self.tcx;
                 let exchange_malloc_fn_def_id = tcx
                     .lang_items()
