@@ -1,7 +1,10 @@
 # TimeLine
 Sept. 10th - 14th: Allocator extension
+
 Sept. 16th - 21th: Merge with Rust compiler, work on implementation part of the paper.
+
 Sept. 22th - ... : Automated link allocation request to different interface (unsafe/safe).
+
 Rest days till Nov.19th: Evaluation and work on paper.
 
 
