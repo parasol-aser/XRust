@@ -15,6 +15,7 @@ crate-type = ["dylib", "rlib"]
 [dependencies]
 alloc = { path = "../liballoc" }
 alloc_jemalloc = { path = "../liballoc_jemalloc", optional = true }
+alloc_unsafe_ptmalloc2 = { path = "../liballoc_unsafe_ptmalloc2"}
 alloc_system = { path = "../liballoc_system" }
 panic_unwind = { path = "../libpanic_unwind", optional = true }
 panic_abort = { path = "../libpanic_abort" }

@@ -37,6 +37,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "alloc_unsafe_ptmalloc2"
+version = "0.0.0"
+dependencies = [
+ "build_helper 0.1.0",
+ "cc 1.0.18 (registry+https://github.com/rust-lang/crates.io-index)",
+ "compiler_builtins 0.0.0",
+ "core 0.0.0",
+ "libc 0.0.0",
+]
+
+[[package]]
 name = "ammonia"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2635,6 +2646,7 @@ dependencies = [
  "alloc 0.0.0",
  "alloc_jemalloc 0.0.0",
  "alloc_system 0.0.0",
+ "alloc_unsafe_ptmalloc2 0.0.0",
  "build_helper 0.1.0",
  "cc 1.0.18 (registry+https://github.com/rust-lang/crates.io-index)",
  "compiler_builtins 0.0.0",

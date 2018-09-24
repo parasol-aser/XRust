@@ -1,0 +1,24 @@
+[package]
+authors = ["peiming <peiming@tamu.edu>"]
+name = "alloc_unsafe_ptmalloc2"
+version = "0.0.0"
+build = "build.rs"
+links = "ptmalloc"
+
+[lib]
+name = "alloc_unsafe_ptmalloc2"
+path = "lib.rs"
+test = false
+doc = false
+
+[dependencies]
+core = { path = "../libcore" }
+libc = { path = "../rustc/libc_shim" }
+compiler_builtins = { path = "../rustc/compiler_builtins_shim" }
+
+[build-dependencies]
+build_helper = { path = "../build_helper" }
+cc = "1.0.1"
+
+[features]
+debug = []
