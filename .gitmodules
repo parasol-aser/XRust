@@ -64,3 +64,6 @@
 	path = src/tools/clang
 	url = https://github.com/rust-lang-nursery/clang/
 	branch = release_70
+[submodule "src/ptmalloc2"]
+	path = src/ptmalloc2
+	url = git@github.tamu.edu:peiming/ptmalloc2.git
