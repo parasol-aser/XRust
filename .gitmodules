@@ -67,3 +67,6 @@
 [submodule "ptmalloc2"]
 	path = ptmalloc2
 	url = git@github.tamu.edu:peiming/ptmalloc2.git
+[submodule "src/ptmalloc2"]
+	path = src/ptmalloc2
+	url = git@github.tamu.edu:peiming/ptmalloc2.git
