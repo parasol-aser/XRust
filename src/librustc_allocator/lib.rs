@@ -47,6 +47,11 @@ pub static ALLOCATOR_METHODS: &[AllocatorMethod] = &[
         inputs: &[AllocatorTy::Layout],
         output: AllocatorTy::ResultPtr,
     },
+    AllocatorMethod {
+        name: "unsafe_alloc_zeroed",
+        inputs: &[AllocatorTy::Layout],
+        output: AllocatorTy::ResultPtr,
+    },
 ];
 
 pub struct AllocatorMethod {

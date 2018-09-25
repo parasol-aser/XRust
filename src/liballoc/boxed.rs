@@ -95,6 +95,11 @@ impl<T> Box<T> {
     pub fn new(x: T) -> Box<T> {
         box x
     }
+
+//    #[inline(always)]
+//    pub fn unsafe_new(x: T) -> Box<T> {
+//        unsafe_box x
+//    }
 }
 
 impl<T: ?Sized> Box<T> {

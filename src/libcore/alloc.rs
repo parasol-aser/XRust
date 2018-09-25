@@ -522,6 +522,15 @@ pub unsafe trait GlobalAlloc {
         ptr
     }
 
+    #[stable(feature = "global_alloc", since = "1.28.0")]
+    unsafe fn unsafe_alloc_zeroed(&self, layout: Layout) -> *mut u8 {
+        let size = layout.size();
+        let ptr = self.unsafe_alloc(layout);
+        if !ptr.is_null() {
+            ptr::write_bytes(ptr, 0, size);
+        }
+        ptr
+    }
     /// Shink or grow a block of memory to the given `new_size`.
     /// The block is described by the given `ptr` pointer and `layout`.
     ///
@@ -887,6 +896,14 @@ pub unsafe trait Alloc {
         p
     }
 
+    unsafe fn unsafe_alloc_zeroed(&mut self, layout: Layout) -> Result<NonNull<u8>, AllocErr> {
+        let size = layout.size();
+        let p = self.unsafe_alloc(layout);
+        if let Ok(p) = p {
+            ptr::write_bytes(p.as_ptr(), 0, size);
+        }
+        p
+    }
     /// Behaves like `alloc`, but also returns the whole size of
     /// the returned block. For some `layout` inputs, like arrays, this
     /// may include extra storage usable for additional data.
@@ -909,6 +926,11 @@ pub unsafe trait Alloc {
     unsafe fn alloc_excess(&mut self, layout: Layout) -> Result<Excess, AllocErr> {
         let usable_size = self.usable_size(&layout);
         self.alloc(layout).map(|p| Excess(p, usable_size.1))
+    }
+
+    unsafe fn unsafe_alloc_excess(&mut self, layout: Layout) -> Result<Excess, AllocErr> {
+        let usable_size = self.usable_size(&layout);
+        self.unsafe_alloc(layout).map(|p| Excess(p, usable_size.1))
     }
 
     /// Behaves like `realloc`, but also returns the whole size of
@@ -1090,6 +1112,18 @@ pub unsafe trait Alloc {
         }
     }
 
+    fn unsafe_alloc_one<T>(&mut self) -> Result<NonNull<T>, AllocErr>
+        where Self: Sized
+    {
+        let k = Layout::new::<T>();
+        if k.size() > 0 {
+            unsafe { self.unsafe_alloc(k).map(|p| p.cast()) }
+        } else {
+            Err(AllocErr)
+        }
+    }
+
+
     /// Deallocates a block suitable for holding an instance of `T`.
     ///
     /// The given block must have been produced by this allocator,
@@ -1160,6 +1194,20 @@ pub unsafe trait Alloc {
             _ => Err(AllocErr),
         }
     }
+
+    fn unsafe_alloc_array<T>(&mut self, n: usize) -> Result<NonNull<T>, AllocErr>
+        where Self: Sized
+    {
+        match Layout::array::<T>(n) {
+            Ok(ref layout) if layout.size() > 0 => {
+                unsafe {
+                    self.unsafe_alloc(layout.clone()).map(|p| p.cast())
+                }
+            }
+            _ => Err(AllocErr),
+        }
+    }
+
 
     /// Reallocates a block previously suitable for holding `n_old`
     /// instances of `T`, returning a block suitable for holding

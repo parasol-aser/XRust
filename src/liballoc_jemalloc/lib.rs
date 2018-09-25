@@ -136,4 +136,10 @@ mod contents {
         };
         ptr
     }
+
+    #[no_mangle]
+    #[rustc_std_internal_symbol]
+    pub unsafe extern fn __rde_unsafe_alloc_zeroed(size: usize, align: usize) -> *mut u8 {
+        __rde_alloc_zeroed(size, align)
+    }
 }
