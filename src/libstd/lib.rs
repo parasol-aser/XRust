@@ -346,6 +346,7 @@ pub use core::{unreachable, unimplemented, write, writeln, try};
 #[macro_use]
 extern crate alloc as alloc_crate;
 extern crate alloc_system;
+extern crate alloc_unsafe_ptmalloc2;
 #[doc(masked)]
 extern crate libc;
 

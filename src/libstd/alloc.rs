@@ -86,6 +86,8 @@ pub use alloc_crate::alloc::*;
 #[doc(inline)]
 pub use alloc_system::System;
 
+pub use alloc_unsafe_ptmalloc2::UnsafePtmalloc;
+
 static HOOK: AtomicPtr<()> = AtomicPtr::new(ptr::null_mut());
 
 /// Registers a custom allocation error hook, replacing any that was previously registered.

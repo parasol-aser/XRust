@@ -10,7 +10,6 @@
 
 #![no_std]
 #![allow(unused_attributes)]
-#![unstable(feature = "alloc_system", reason = "this library is unlikely to be stabilized in its current form or name", issue = "32838")]
 
 #![feature(allocator_api)]
 #![feature(core_intrinsics)]
@@ -94,8 +93,8 @@ mod contents {
         fn pt_calloc(nobj: size_t, size: size_t) -> *mut c_void;
         fn pt_unsafe_calloc(nobj: size_t, size: size_t) -> *mut c_void;
 
-        pub fn pt_memalign(align: size_t, size: size_t) -> *mut c_void;
-        pub fn pt_unsafe_memalign(align: size_t, size: size_t) -> *mut c_void;
+        fn pt_memalign(align: size_t, size: size_t) -> *mut c_void;
+        fn pt_unsafe_memalign(align: size_t, size: size_t) -> *mut c_void;
 
         fn pt_realloc(p: *mut c_void, size: size_t) -> *mut c_void;
 
