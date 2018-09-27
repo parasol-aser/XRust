@@ -10,7 +10,9 @@
 
 #![no_std]
 #![allow(unused_attributes)]
-
+#![unstable(feature = "alloc_unsafe_ptmalloc",
+            reason = "implementation detail of std, does not provide any public API",
+            issue = "0")]
 #![feature(allocator_api)]
 #![feature(core_intrinsics)]
 #![cfg_attr(not(stage0), feature(nll))]
@@ -162,5 +164,6 @@ mod contents {
                 new_ptr
             }
         }
+
     }
 }

@@ -87,6 +87,17 @@ impl<T, A: Alloc> RawVec<T, A> {
         RawVec::allocate_in(cap, true, a)
     }
 
+    #[inline]
+    pub fn unsafe_with_capacity_in(cap: usize, a: A) -> Self {
+        RawVec::unsafe_allocate_in(cap, false, a)
+    }
+
+    #[inline]
+    pub fn unsafe_with_capacity_zeroed_in(cap: usize, a: A) -> Self {
+        RawVec::unsafe_allocate_in(cap, true, a)
+    }
+
+
     fn allocate_in(cap: usize, zeroed: bool, mut a: A) -> Self {
         unsafe {
             let elem_size = mem::size_of::<T>();
@@ -118,6 +129,39 @@ impl<T, A: Alloc> RawVec<T, A> {
             }
         }
     }
+
+    fn unsafe_allocate_in(cap: usize, zeroed: bool, mut a: A) -> Self {
+        unsafe {
+            let elem_size = mem::size_of::<T>();
+
+            let alloc_size = cap.checked_mul(elem_size).unwrap_or_else(|| capacity_overflow());
+            alloc_guard(alloc_size).unwrap_or_else(|_| capacity_overflow());
+
+            // handles ZSTs and `cap = 0` alike
+            let ptr = if alloc_size == 0 {
+                NonNull::<T>::dangling()
+            } else {
+                let align = mem::align_of::<T>();
+                let layout = Layout::from_size_align(alloc_size, align).unwrap();
+                let result = if zeroed {
+                    a.unsafe_alloc_zeroed(layout)
+                } else {
+                    a.unsafe_alloc(layout)
+                };
+                match result {
+                    Ok(ptr) => ptr.cast(),
+                    Err(_) => handle_alloc_error(layout),
+                }
+            };
+
+            RawVec {
+                ptr: ptr.into(),
+                cap,
+                a,
+            }
+        }
+    }
+
 }
 
 impl<T> RawVec<T, Global> {
@@ -154,6 +198,16 @@ impl<T> RawVec<T, Global> {
     #[inline]
     pub fn with_capacity_zeroed(cap: usize) -> Self {
         RawVec::allocate_in(cap, true, Global)
+    }
+
+    #[inline]
+    pub fn unsafe_with_capacity(cap: usize) -> Self {
+        RawVec::unsafe_allocate_in(cap, false, Global)
+    }
+
+    #[inline]
+    pub fn unsafe_with_capacity_zeroed(cap: usize) -> Self {
+        RawVec::unsafe_allocate_in(cap, true, Global)
     }
 }
 

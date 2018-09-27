@@ -364,6 +364,15 @@ impl<T> Vec<T> {
         }
     }
 
+    #[inline]
+    #[stable(feature = "rust1", since = "1.0.0")]
+    pub fn unsafe_with_capacity(capacity: usize) -> Vec<T> {
+        Vec {
+            buf: RawVec::unsafe_with_capacity(capacity),
+            len: 0,
+        }
+    }
+
     /// Creates a `Vec<T>` directly from the raw components of another vector.
     ///
     /// # Safety

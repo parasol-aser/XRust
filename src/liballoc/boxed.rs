@@ -96,10 +96,11 @@ impl<T> Box<T> {
         box x
     }
 
-//    #[inline(always)]
-//    pub fn unsafe_new(x: T) -> Box<T> {
-//        unsafe_box x
-//    }
+    #[stable(feature = "rust1", since = "1.0.0")]
+    #[inline(always)]
+    pub fn unsafe_new(x: T) -> Box<T> {
+        unsafe_box x
+    }
 }
 
 impl<T: ?Sized> Box<T> {

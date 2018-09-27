@@ -313,6 +313,9 @@
 #![feature(panic_implementation)]
 #![feature(non_exhaustive)]
 
+// Peiming Liu: for unsafe ptmalloc
+#![feature(alloc_unsafe_ptmalloc)]
+
 #![default_lib_allocator]
 
 // Always use alloc_system during stage0 since we don't know if the alloc_*

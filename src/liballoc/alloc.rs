@@ -88,7 +88,6 @@ pub unsafe fn alloc(layout: Layout) -> *mut u8 {
 #[inline]
 pub unsafe fn unsafe_alloc(layout: Layout) -> *mut u8 {
     __rust_unsafe_alloc(layout.size(), layout.align())
-    //__rust_alloc(layout.size(), layout.align())
 }
 
 
@@ -161,6 +160,12 @@ pub unsafe fn alloc_zeroed(layout: Layout) -> *mut u8 {
     __rust_alloc_zeroed(layout.size(), layout.align())
 }
 
+#[stable(feature = "global_alloc", since = "1.28.0")]
+#[inline]
+pub unsafe fn unsafe_alloc_zeroed(layout: Layout) -> *mut u8 {
+    __rust_unsafe_alloc(layout.size(), layout.align())
+}
+
 #[unstable(feature = "allocator_api", issue = "32838")]
 unsafe impl Alloc for Global {
     #[inline]
@@ -168,10 +173,10 @@ unsafe impl Alloc for Global {
         NonNull::new(alloc(layout)).ok_or(AllocErr)
     }
 
-//    #[inline]
-//    unsafe fn unsafe_alloc(&mut self, layout: Layout) -> Result<NonNull<u8>, AllocErr> {
-//        NonNull::new(unsafe_alloc(layout)).ok_or(AllocErr)
-//    }
+    #[inline]
+    unsafe fn unsafe_alloc(&mut self, layout: Layout) -> Result<NonNull<u8>, AllocErr> {
+        NonNull::new(unsafe_alloc(layout)).ok_or(AllocErr)
+    }
 
     #[inline]
     unsafe fn dealloc(&mut self, ptr: NonNull<u8>, layout: Layout) {
@@ -191,6 +196,11 @@ unsafe impl Alloc for Global {
     #[inline]
     unsafe fn alloc_zeroed(&mut self, layout: Layout) -> Result<NonNull<u8>, AllocErr> {
         NonNull::new(alloc_zeroed(layout)).ok_or(AllocErr)
+    }
+
+    #[inline]
+    unsafe fn unsafe_alloc_zeroed(&mut self, layout: Layout) -> Result<NonNull<u8>, AllocErr> {
+        NonNull::new(unsafe_alloc_zeroed(layout)).ok_or(AllocErr)
     }
 }
 
