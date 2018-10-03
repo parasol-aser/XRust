@@ -136,24 +136,40 @@ impl Builder<'a, 'll, 'tcx> {
         }
     }
 
-    pub fn ret_void(&self) {
+    unsafe fn insert_unsafe_metadata(&self, inst: &'ll Value) {
+        let key = "peiming.unsafe";
+        let kind = llvm::LLVMGetMDKindIDInContext(self.cx.llcx, key.as_ptr() as *const c_char, key.len() as c_uint);
+        let val: &'ll Value = C_i32(self.cx, 1);
+        llvm::LLVMSetMetadata(inst, kind, llvm::LLVMMDNodeInContext(self.cx.llcx, &val, 1));
+    }
+
+    pub fn ret_void(&self, within_unsafe: bool) {
         self.count_insn("retvoid");
         unsafe {
-            llvm::LLVMBuildRetVoid(self.llbuilder);
+            let r = llvm::LLVMBuildRetVoid(self.llbuilder);
+            if within_unsafe {
+                self.insert_unsafe_metadata(r);
+            }
         }
     }
 
-    pub fn ret(&self, v: &'ll Value) {
+    pub fn ret(&self, v: &'ll Value, within_unsafe: bool) {
         self.count_insn("ret");
         unsafe {
-            llvm::LLVMBuildRet(self.llbuilder, v);
+            let r = llvm::LLVMBuildRet(self.llbuilder, v);
+            if within_unsafe {
+                self.insert_unsafe_metadata(r);
+            }
         }
     }
 
-    pub fn br(&self, dest: &'ll BasicBlock) {
+    pub fn br(&self, dest: &'ll BasicBlock, within_unsafe: bool) {
         self.count_insn("br");
         unsafe {
-            llvm::LLVMBuildBr(self.llbuilder, dest);
+            let r = llvm::LLVMBuildBr(self.llbuilder, dest);
+            if within_unsafe {
+                self.insert_unsafe_metadata(r);
+            }
         }
     }
 
@@ -162,10 +178,14 @@ impl Builder<'a, 'll, 'tcx> {
         cond: &'ll Value,
         then_llbb: &'ll BasicBlock,
         else_llbb: &'ll BasicBlock,
+        within_unsafe: bool,
     ) {
         self.count_insn("condbr");
         unsafe {
-            llvm::LLVMBuildCondBr(self.llbuilder, cond, then_llbb, else_llbb);
+            let r = llvm::LLVMBuildCondBr(self.llbuilder, cond, then_llbb, else_llbb);
+            if within_unsafe {
+                self.insert_unsafe_metadata(r);
+            }
         }
     }
 
@@ -174,9 +194,14 @@ impl Builder<'a, 'll, 'tcx> {
         v: &'ll Value,
         else_llbb: &'ll BasicBlock,
         num_cases: usize,
+        within_unsafe: bool,
     ) -> &'ll Value {
         unsafe {
-            llvm::LLVMBuildSwitch(self.llbuilder, v, else_llbb, num_cases as c_uint)
+            let r = llvm::LLVMBuildSwitch(self.llbuilder, v, else_llbb, num_cases as c_uint);
+            if within_unsafe {
+                self.insert_unsafe_metadata(r);
+            }
+            r
         }
     }
 

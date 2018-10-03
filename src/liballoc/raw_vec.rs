@@ -97,7 +97,6 @@ impl<T, A: Alloc> RawVec<T, A> {
         RawVec::unsafe_allocate_in(cap, true, a)
     }
 
-
     fn allocate_in(cap: usize, zeroed: bool, mut a: A) -> Self {
         unsafe {
             let elem_size = mem::size_of::<T>();

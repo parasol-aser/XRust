@@ -42,7 +42,17 @@ impl FunctionCx<'a, 'll, 'tcx> {
         debug!("codegen_block({:?}={:?})", bb, data);
 
         for statement in &data.statements {
-            bx = self.codegen_statement(bx, statement);
+            let unsafe_or_not = if let mir::ClearCrossCrate::Set(ref scope) = self.mir.source_scope_local_data {
+                if let mir::Safety::Safe = scope[statement.source_info.scope].safety {
+                    false
+                } else {
+                    true
+                }
+            } else {
+                false
+            };
+
+            bx = self.codegen_statement(bx, statement, unsafe_or_not);
         }
 
         self.codegen_terminator(bx, bb, data.terminator());
