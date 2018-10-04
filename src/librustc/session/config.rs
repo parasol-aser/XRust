@@ -404,6 +404,8 @@ top_level_options!(
         remap_path_prefix: Vec<(PathBuf, PathBuf)> [UNTRACKED],
 
         edition: Edition [TRACKED],
+
+        unsafe_to_ir : bool [TRACKED],
     }
 );
 
@@ -599,6 +601,7 @@ impl Default for Options {
             cli_forced_thinlto_off: false,
             remap_path_prefix: Vec::new(),
             edition: DEFAULT_EDITION,
+            unsafe_to_ir:false,
         }
     }
 }
@@ -1669,6 +1672,7 @@ pub fn rustc_short_optgroups() -> Vec<RustcOptGroup> {
         opt::multi_s("C", "codegen", "Set a codegen option", "OPT[=VALUE]"),
         opt::flag_s("V", "version", "Print version info and exit"),
         opt::flag_s("v", "verbose", "Use verbose output"),
+        opt::flag_s("", "unsafe-analysis", "Mark unsafe metadata in LLVM-IR"),
     ]
 }
 
@@ -1824,6 +1828,8 @@ pub fn build_session_options_and_crate_config(
                 )
         )
     }
+
+    let unsafe_to_ir = matches.opt_present("unsafe-analysis");
 
 
     // We need the opts_present check because the driver will send us Matches
@@ -2244,6 +2250,7 @@ pub fn build_session_options_and_crate_config(
             cli_forced_thinlto_off: disable_thinlto,
             remap_path_prefix,
             edition,
+            unsafe_to_ir,
         },
         cfg,
     )

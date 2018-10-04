@@ -51,10 +51,15 @@ impl FunctionCx<'a, 'll, 'tcx> {
             } else {
                 false
             };
+            bx.safety = unsafe_or_not;
 
-            bx = self.codegen_statement(bx, statement, unsafe_or_not);
+            if !bx.cx.tcx.sess.opts.unsafe_to_ir {
+                bx.safety = false;
+            }
+
+            bx = self.codegen_statement(bx, statement);
         }
-
+        bx.safety = false;
         self.codegen_terminator(bx, bb, data.terminator());
     }
 

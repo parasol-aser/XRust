@@ -19,8 +19,7 @@ use super::LocalRef;
 impl FunctionCx<'a, 'll, 'tcx> {
     pub fn codegen_statement(&mut self,
                            bx: Builder<'a, 'll, 'tcx>,
-                           statement: &mir::Statement<'tcx>,
-                           _unsafe_or_not: bool)
+                           statement: &mir::Statement<'tcx>)
                            -> Builder<'a, 'll, 'tcx> {
         debug!("codegen_statement(statement={:?})", statement);
 
