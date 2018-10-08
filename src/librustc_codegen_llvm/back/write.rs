@@ -1349,7 +1349,9 @@ fn execute_work_item(cgcx: &CodegenContext,
         debug!("llvm-optimizing {:?}", module_name);
 
         unsafe {
-            optimize(cgcx, &diag_handler, &module, config, timeline)?;
+            if (!config.emit_ir) && (!config.emit_bc) {
+                optimize(cgcx, &diag_handler, &module, config, timeline)?;
+            }
 
             let linker_does_lto = cgcx.opts.debugging_opts.cross_lang_lto.enabled();
 

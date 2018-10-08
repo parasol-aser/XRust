@@ -357,6 +357,7 @@ impl<T> Vec<T> {
     /// ```
     #[inline]
     #[stable(feature = "rust1", since = "1.0.0")]
+    #[alloc_site]
     pub fn with_capacity(capacity: usize) -> Vec<T> {
         Vec {
             buf: RawVec::with_capacity(capacity),

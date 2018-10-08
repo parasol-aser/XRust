@@ -200,7 +200,7 @@ impl Builder<'a, 'll, 'tcx> {
         unsafe {
             let instr = llvm::LLVMBuildSwitch(self.llbuilder, v, else_llbb, num_cases as c_uint);
             if self.safety {
-                //self.insert_unsafe_metadata(instr);
+                self.insert_unsafe_metadata(instr);
             }
             instr
         }
@@ -758,7 +758,7 @@ impl Builder<'a, 'll, 'tcx> {
         unsafe {
             let instr = llvm::LLVMBuildStructGEP(self.llbuilder, ptr, idx as c_uint, noname());
             if self.safety {
-                //self.insert_unsafe_metadata(instr);
+                self.insert_unsafe_metadata(instr);
             }
             instr
         }
@@ -770,7 +770,7 @@ impl Builder<'a, 'll, 'tcx> {
         unsafe {
             let instr = llvm::LLVMBuildTrunc(self.llbuilder, val, dest_ty, noname());
             if self.safety {
-                //self.insert_unsafe_metadata(instr);
+                self.insert_unsafe_metadata(instr);
             }
             instr
         }
@@ -781,7 +781,7 @@ impl Builder<'a, 'll, 'tcx> {
         unsafe {
             let instr = llvm::LLVMBuildZExt(self.llbuilder, val, dest_ty, noname());
             if self.safety {
-                //self.insert_unsafe_metadata(instr);
+                self.insert_unsafe_metadata(instr);
             }
             instr
         }
@@ -792,7 +792,7 @@ impl Builder<'a, 'll, 'tcx> {
         unsafe {
             let instr = llvm::LLVMBuildSExt(self.llbuilder, val, dest_ty, noname());
             if self.safety {
-                //self.insert_unsafe_metadata(instr);
+                self.insert_unsafe_metadata(instr);
             }
             instr
         }
@@ -803,7 +803,7 @@ impl Builder<'a, 'll, 'tcx> {
         unsafe {
             let instr = llvm::LLVMBuildFPToUI(self.llbuilder, val, dest_ty, noname());
             if self.safety {
-                //self.insert_unsafe_metadata(instr);
+                self.insert_unsafe_metadata(instr);
             }
             instr
         }
@@ -814,7 +814,7 @@ impl Builder<'a, 'll, 'tcx> {
         unsafe {
             let instr = llvm::LLVMBuildFPToSI(self.llbuilder, val, dest_ty,noname());
             if self.safety {
-                //self.insert_unsafe_metadata(instr);
+                self.insert_unsafe_metadata(instr);
             }
             instr
         }
@@ -825,7 +825,7 @@ impl Builder<'a, 'll, 'tcx> {
         unsafe {
             let instr = llvm::LLVMBuildUIToFP(self.llbuilder, val, dest_ty, noname());
             if self.safety {
-                //self.insert_unsafe_metadata(instr);
+                self.insert_unsafe_metadata(instr);
             }
             instr
         }
@@ -836,7 +836,7 @@ impl Builder<'a, 'll, 'tcx> {
         unsafe {
             let instr = llvm::LLVMBuildSIToFP(self.llbuilder, val, dest_ty, noname());
             if self.safety {
-                //self.insert_unsafe_metadata(instr);
+                self.insert_unsafe_metadata(instr);
             }
             instr
         }
@@ -847,7 +847,7 @@ impl Builder<'a, 'll, 'tcx> {
         unsafe {
             let instr = llvm::LLVMBuildFPTrunc(self.llbuilder, val, dest_ty, noname());
             if self.safety {
-                //self.insert_unsafe_metadata(instr);
+                self.insert_unsafe_metadata(instr);
             }
             instr
         }
@@ -858,7 +858,7 @@ impl Builder<'a, 'll, 'tcx> {
         unsafe {
             let instr = llvm::LLVMBuildFPExt(self.llbuilder, val, dest_ty, noname());
             if self.safety {
-                //self.insert_unsafe_metadata(instr);
+                self.insert_unsafe_metadata(instr);
             }
             instr
         }
@@ -869,7 +869,7 @@ impl Builder<'a, 'll, 'tcx> {
         unsafe {
             let instr = llvm::LLVMBuildPtrToInt(self.llbuilder, val, dest_ty, noname());
             if self.safety {
-                //self.insert_unsafe_metadata(instr);
+                self.insert_unsafe_metadata(instr);
             }
             instr
         }
@@ -880,7 +880,7 @@ impl Builder<'a, 'll, 'tcx> {
         unsafe {
             let instr = llvm::LLVMBuildIntToPtr(self.llbuilder, val, dest_ty, noname());
             if self.safety {
-                //self.insert_unsafe_metadata(instr);
+                self.insert_unsafe_metadata(instr);
             }
             instr
         }
@@ -891,7 +891,7 @@ impl Builder<'a, 'll, 'tcx> {
         unsafe {
             let instr = llvm::LLVMBuildBitCast(self.llbuilder, val, dest_ty, noname());
             if self.safety {
-                //self.insert_unsafe_metadata(instr);
+                self.insert_unsafe_metadata(instr);
             }
             instr
         }
@@ -902,7 +902,7 @@ impl Builder<'a, 'll, 'tcx> {
         unsafe {
             let instr = llvm::LLVMBuildPointerCast(self.llbuilder, val, dest_ty, noname());
             if self.safety {
-                //self.insert_unsafe_metadata(instr);
+                self.insert_unsafe_metadata(instr);
             }
             instr
         }
@@ -913,7 +913,7 @@ impl Builder<'a, 'll, 'tcx> {
         unsafe {
             let instr = llvm::LLVMRustBuildIntCast(self.llbuilder, val, dest_ty, is_signed);
             if self.safety {
-                //self.insert_unsafe_metadata(instr);
+                self.insert_unsafe_metadata(instr);
             }
             instr
         }
@@ -925,7 +925,7 @@ impl Builder<'a, 'll, 'tcx> {
         unsafe {
             let instr = llvm::LLVMBuildICmp(self.llbuilder, op as c_uint, lhs, rhs, noname());
             if self.safety {
-                //self.insert_unsafe_metadata(instr);
+                self.insert_unsafe_metadata(instr);
             }
             instr
         }
@@ -936,7 +936,7 @@ impl Builder<'a, 'll, 'tcx> {
         unsafe {
             let instr = llvm::LLVMBuildFCmp(self.llbuilder, op as c_uint, lhs, rhs, noname());
             if self.safety {
-                //self.insert_unsafe_metadata(instr);
+                self.insert_unsafe_metadata(instr);
             }
             instr
         }
@@ -948,7 +948,7 @@ impl Builder<'a, 'll, 'tcx> {
         unsafe {
             let instr = llvm::LLVMBuildPhi(self.llbuilder, ty, noname());
             if self.safety {
-                //self.insert_unsafe_metadata(instr);
+                self.insert_unsafe_metadata(instr);
             }
             instr
         }
@@ -964,7 +964,7 @@ impl Builder<'a, 'll, 'tcx> {
                                   vals.len() as c_uint);
 
             if self.safety {
-                //self.insert_unsafe_metadata(phi);
+                self.insert_unsafe_metadata(phi);
             }
             phi
         }
@@ -1022,7 +1022,7 @@ impl Builder<'a, 'll, 'tcx> {
             let instr = llvm::LLVMRustBuildMinNum(self.llbuilder, lhs, rhs)
                 .expect("LLVMRustBuildMinNum is not available in LLVM version < 6.0");
             if self.safety {
-                //self.insert_unsafe_metadata(instr);
+                self.insert_unsafe_metadata(instr);
             }
             instr
         }
@@ -1034,7 +1034,7 @@ impl Builder<'a, 'll, 'tcx> {
             let instr = llvm::LLVMRustBuildMaxNum(self.llbuilder, lhs, rhs)
                 .expect("LLVMRustBuildMaxNum is not available in LLVM version < 6.0");
             if self.safety {
-                //self.insert_unsafe_metadata(instr);
+                self.insert_unsafe_metadata(instr);
             }
             instr
         }
@@ -1049,7 +1049,7 @@ impl Builder<'a, 'll, 'tcx> {
         unsafe {
             let instr = llvm::LLVMBuildSelect(self.llbuilder, cond, then_val, else_val, noname());
             if self.safety {
-                //self.insert_unsafe_metadata(instr);
+                self.insert_unsafe_metadata(instr);
             }
             instr
         }
@@ -1061,7 +1061,7 @@ impl Builder<'a, 'll, 'tcx> {
         unsafe {
             let instr = llvm::LLVMBuildVAArg(self.llbuilder, list, ty, noname());
             if self.safety {
-                //self.insert_unsafe_metadata(instr);
+                self.insert_unsafe_metadata(instr);
             }
             instr
         }
@@ -1072,7 +1072,7 @@ impl Builder<'a, 'll, 'tcx> {
         unsafe {
             let instr = llvm::LLVMBuildExtractElement(self.llbuilder, vec, idx, noname());
             if self.safety {
-                //self.insert_unsafe_metadata(instr);
+                self.insert_unsafe_metadata(instr);
             }
             instr
         }
@@ -1087,7 +1087,7 @@ impl Builder<'a, 'll, 'tcx> {
         unsafe {
             let instr = llvm::LLVMBuildInsertElement(self.llbuilder, vec, elt, idx, noname());
             if self.safety {
-                //self.insert_unsafe_metadata(instr);
+                self.insert_unsafe_metadata(instr);
             }
             instr
         }
@@ -1098,7 +1098,7 @@ impl Builder<'a, 'll, 'tcx> {
         unsafe {
             let instr = llvm::LLVMBuildShuffleVector(self.llbuilder, v1, v2, mask, noname());
             if self.safety {
-                //self.insert_unsafe_metadata(instr);
+                self.insert_unsafe_metadata(instr);
             }
             instr
         }
@@ -1124,7 +1124,7 @@ impl Builder<'a, 'll, 'tcx> {
                 .expect("LLVMRustBuildVectorReduceFAdd is not available in LLVM version < 5.0");
             llvm::LLVMRustSetHasUnsafeAlgebra(instr);
             if self.safety {
-                //self.insert_unsafe_metadata(instr);
+                self.insert_unsafe_metadata(instr);
             }
             instr
         }
@@ -1139,7 +1139,7 @@ impl Builder<'a, 'll, 'tcx> {
                 .expect("LLVMRustBuildVectorReduceFMul is not available in LLVM version < 5.0");
             llvm::LLVMRustSetHasUnsafeAlgebra(instr);
             if self.safety {
-                //self.insert_unsafe_metadata(instr);
+                self.insert_unsafe_metadata(instr);
             }
             instr
         }
@@ -1150,7 +1150,7 @@ impl Builder<'a, 'll, 'tcx> {
             let instr = llvm::LLVMRustBuildVectorReduceAdd(self.llbuilder, src)
                 .expect("LLVMRustBuildVectorReduceAdd is not available in LLVM version < 5.0");
             if self.safety {
-                //self.insert_unsafe_metadata(instr);
+                self.insert_unsafe_metadata(instr);
             }
             instr
         }
@@ -1161,7 +1161,7 @@ impl Builder<'a, 'll, 'tcx> {
             let instr = llvm::LLVMRustBuildVectorReduceMul(self.llbuilder, src)
                 .expect("LLVMRustBuildVectorReduceMul is not available in LLVM version < 5.0");
             if self.safety {
-                //self.insert_unsafe_metadata(instr);
+                self.insert_unsafe_metadata(instr);
             }
             instr
         }
@@ -1172,7 +1172,7 @@ impl Builder<'a, 'll, 'tcx> {
             let instr = llvm::LLVMRustBuildVectorReduceAnd(self.llbuilder, src)
                 .expect("LLVMRustBuildVectorReduceAnd is not available in LLVM version < 5.0");
             if self.safety {
-                //self.insert_unsafe_metadata(instr);
+                self.insert_unsafe_metadata(instr);
             }
             instr
         }
@@ -1183,7 +1183,7 @@ impl Builder<'a, 'll, 'tcx> {
             let instr = llvm::LLVMRustBuildVectorReduceOr(self.llbuilder, src)
                 .expect("LLVMRustBuildVectorReduceOr is not available in LLVM version < 5.0");
             if self.safety {
-                //self.insert_unsafe_metadata(instr);
+                self.insert_unsafe_metadata(instr);
             }
             instr
         }
@@ -1194,7 +1194,7 @@ impl Builder<'a, 'll, 'tcx> {
             let instr = llvm::LLVMRustBuildVectorReduceXor(self.llbuilder, src)
                 .expect("LLVMRustBuildVectorReduceXor is not available in LLVM version < 5.0");
             if self.safety {
-                //self.insert_unsafe_metadata(instr);
+                self.insert_unsafe_metadata(instr);
             }
             instr
         }
@@ -1205,7 +1205,7 @@ impl Builder<'a, 'll, 'tcx> {
             let instr = llvm::LLVMRustBuildVectorReduceFMin(self.llbuilder, src, /*NoNaNs:*/ false)
                 .expect("LLVMRustBuildVectorReduceFMin is not available in LLVM version < 5.0");
             if self.safety {
-                //self.insert_unsafe_metadata(instr);
+                self.insert_unsafe_metadata(instr);
             }
             instr
         }
@@ -1216,7 +1216,7 @@ impl Builder<'a, 'll, 'tcx> {
             let instr = llvm::LLVMRustBuildVectorReduceFMax(self.llbuilder, src, /*NoNaNs:*/ false)
                 .expect("LLVMRustBuildVectorReduceFMax is not available in LLVM version < 5.0");
             if self.safety {
-                //self.insert_unsafe_metadata(instr);
+                self.insert_unsafe_metadata(instr);
             }
             instr
         }
@@ -1228,7 +1228,7 @@ impl Builder<'a, 'll, 'tcx> {
                 .expect("LLVMRustBuildVectorReduceFMin is not available in LLVM version < 5.0");
             llvm::LLVMRustSetHasUnsafeAlgebra(instr);
             if self.safety {
-                //self.insert_unsafe_metadata(instr);
+                self.insert_unsafe_metadata(instr);
             }
             instr
         }
@@ -1240,7 +1240,7 @@ impl Builder<'a, 'll, 'tcx> {
                 .expect("LLVMRustBuildVectorReduceFMax is not available in LLVM version < 5.0");
             llvm::LLVMRustSetHasUnsafeAlgebra(instr);
             if self.safety {
-                //self.insert_unsafe_metadata(instr);
+                self.insert_unsafe_metadata(instr);
             }
             instr
         }
@@ -1251,7 +1251,7 @@ impl Builder<'a, 'll, 'tcx> {
             let instr = llvm::LLVMRustBuildVectorReduceMin(self.llbuilder, src, is_signed)
                 .expect("LLVMRustBuildVectorReduceMin is not available in LLVM version < 5.0");
             if self.safety {
-                //self.insert_unsafe_metadata(instr);
+                self.insert_unsafe_metadata(instr);
             }
             instr
         }
@@ -1262,7 +1262,7 @@ impl Builder<'a, 'll, 'tcx> {
             let instr = llvm::LLVMRustBuildVectorReduceMax(self.llbuilder, src, is_signed)
                 .expect("LLVMRustBuildVectorReduceMax is not available in LLVM version < 5.0");
             if self.safety {
-                //self.insert_unsafe_metadata(instr);
+                self.insert_unsafe_metadata(instr);
             }
             instr
         }
@@ -1274,7 +1274,7 @@ impl Builder<'a, 'll, 'tcx> {
         unsafe {
             let instr = llvm::LLVMBuildExtractValue(self.llbuilder, agg_val, idx as c_uint, noname());
             if self.safety {
-                //self.insert_unsafe_metadata(instr);
+                self.insert_unsafe_metadata(instr);
             }
             instr
         }
@@ -1288,7 +1288,7 @@ impl Builder<'a, 'll, 'tcx> {
             let instr = llvm::LLVMBuildInsertValue(self.llbuilder, agg_val, elt, idx as c_uint,
                                        noname());
             if self.safety {
-                //self.insert_unsafe_metadata(instr);
+                self.insert_unsafe_metadata(instr);
             }
             instr
         }
@@ -1301,7 +1301,7 @@ impl Builder<'a, 'll, 'tcx> {
             let instr = llvm::LLVMBuildLandingPad(self.llbuilder, ty, pers_fn,
                                       num_clauses as c_uint, noname());
             if self.safety {
-                //self.insert_unsafe_metadata(instr);
+                self.insert_unsafe_metadata(instr);
             }
             instr
         }
@@ -1325,7 +1325,7 @@ impl Builder<'a, 'll, 'tcx> {
         unsafe {
             let instr = llvm::LLVMBuildResume(self.llbuilder, exn);
             if self.safety {
-                //self.insert_unsafe_metadata(instr);
+                self.insert_unsafe_metadata(instr);
             }
             instr
         }
@@ -1346,7 +1346,7 @@ impl Builder<'a, 'll, 'tcx> {
         };
         let instr = ret.expect("LLVM does not have support for cleanuppad");
         if self.safety {
-            //self.insert_unsafe_metadata(instr);
+            self.insert_unsafe_metadata(instr);
         }
         instr
     }
@@ -1361,7 +1361,7 @@ impl Builder<'a, 'll, 'tcx> {
         };
         let instr = ret.expect("LLVM does not have support for cleanupret");
         if self.safety {
-            //self.insert_unsafe_metadata(instr);
+            self.insert_unsafe_metadata(instr);
         }
         instr
     }
@@ -1379,7 +1379,7 @@ impl Builder<'a, 'll, 'tcx> {
         };
         let instr = ret.expect("LLVM does not have support for catchpad");
         if self.safety {
-            //self.insert_unsafe_metadata(instr);
+            self.insert_unsafe_metadata(instr);
         }
         instr
     }
@@ -1391,7 +1391,7 @@ impl Builder<'a, 'll, 'tcx> {
         };
         let instr = ret.expect("LLVM does not have support for catchret");
         if self.safety {
-            //self.insert_unsafe_metadata(instr);
+            self.insert_unsafe_metadata(instr);
         }
         instr
     }
@@ -1411,7 +1411,7 @@ impl Builder<'a, 'll, 'tcx> {
         };
         let instr = ret.expect("LLVM does not have support for catchswitch");
         if self.safety {
-            //self.insert_unsafe_metadata(instr);
+            self.insert_unsafe_metadata(instr);
         }
         instr
     }

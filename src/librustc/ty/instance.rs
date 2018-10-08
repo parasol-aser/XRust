@@ -95,6 +95,16 @@ impl<'tcx> InstanceDef<'tcx> {
         }
     }
 
+    pub fn is_alloc_site<'a>(
+        &self,
+        tcx: TyCtxt<'a, 'tcx, 'tcx>
+    ) -> bool {
+        let attrs = self.attrs(tcx);
+        attrs.iter().any(|item| {
+            item.check_name("alloc_site")
+        })
+    }
+
     pub fn requires_local<'a>(
         &self,
         tcx: TyCtxt<'a, 'tcx, 'tcx>

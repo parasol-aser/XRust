@@ -92,6 +92,7 @@ impl<T> Box<T> {
     /// ```
     #[stable(feature = "rust1", since = "1.0.0")]
     #[inline(always)]
+    #[alloc_site]
     pub fn new(x: T) -> Box<T> {
         box x
     }

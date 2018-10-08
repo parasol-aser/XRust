@@ -43,10 +43,10 @@ impl FunctionCx<'a, 'll, 'tcx> {
 
         for statement in &data.statements {
             let unsafe_or_not = if let mir::ClearCrossCrate::Set(ref scope) = self.mir.source_scope_local_data {
-                if let mir::Safety::Safe = scope[statement.source_info.scope].safety {
-                    false
-                } else {
+                if let mir::Safety::ExplicitUnsafe(_) = scope[statement.source_info.scope].safety {
                     true
+                } else {
+                    false
                 }
             } else {
                 false
@@ -59,8 +59,8 @@ impl FunctionCx<'a, 'll, 'tcx> {
 
             bx = self.codegen_statement(bx, statement);
         }
-        bx.safety = false;
         self.codegen_terminator(bx, bb, data.terminator());
+        bx.safety = false;
     }
 
     fn codegen_terminator(&mut self,
@@ -73,6 +73,18 @@ impl FunctionCx<'a, 'll, 'tcx> {
         // Create the cleanup bundle, if needed.
         let tcx = bx.tcx();
         let span = terminator.source_info.span;
+
+        let unsafe_or_not = if let mir::ClearCrossCrate::Set(ref scope) = self.mir.source_scope_local_data {
+            if let mir::Safety::ExplicitUnsafe(_) = scope[terminator.source_info.scope].safety {
+                true
+            } else {
+                false
+            }
+        } else {
+            false
+        };
+        bx.safety = unsafe_or_not;
+
         let funclet_bb = self.cleanup_kinds[bb].funclet_bb(bb);
         let funclet = funclet_bb.and_then(|funclet_bb| self.funclets[funclet_bb].as_ref());
 

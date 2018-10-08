@@ -184,5 +184,12 @@ fn predefine_fn<'a, 'tcx>(cx: &CodegenCx<'a, 'tcx>,
     }
     attributes::from_fn_attrs(cx, lldecl, Some(instance.def.def_id()));
 
+    if instance.def.is_alloc_site(cx.tcx) {
+        llvm::AddFunctionAttrStringValue(
+            lldecl, llvm::AttributePlace::Function,
+            const_cstr!("alloc site"), const_cstr!("test"));
+        //llvm::Attribute::AllocSite.apply_llfn(llvm::AttributePlace::Function, lldecl);
+    }
+
     cx.instances.borrow_mut().insert(instance, lldecl);
 }

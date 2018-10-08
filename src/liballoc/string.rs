@@ -424,8 +424,15 @@ impl String {
     /// ```
     #[inline]
     #[stable(feature = "rust1", since = "1.0.0")]
+    #[alloc_site]
     pub fn with_capacity(capacity: usize) -> String {
         String { vec: Vec::with_capacity(capacity) }
+    }
+
+    #[inline]
+    #[stable(feature = "rust1", since = "1.0.0")]
+    pub fn unsafe_with_capacity(capacity: usize) -> String {
+        String { vec: Vec::unsafe_with_capacity(capacity) }
     }
 
     // HACK(japaric): with cfg(test) the inherent `[T]::to_vec` method, which is

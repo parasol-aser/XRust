@@ -128,6 +128,7 @@ pub enum Attribute {
     SanitizeThread  = 20,
     SanitizeAddress = 21,
     SanitizeMemory  = 22,
+    AllocSite       = 23,
 }
 
 /// LLVMIntPredicate
