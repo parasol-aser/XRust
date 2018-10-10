@@ -60,7 +60,7 @@ impl FunctionCx<'a, 'll, 'tcx> {
             bx = self.codegen_statement(bx, statement);
         }
         self.codegen_terminator(bx, bb, data.terminator());
-        bx.safety = false;
+        //bx.safety = false;  // Peiming Liu, not a good practice, maybe replace it later.
     }
 
     fn codegen_terminator(&mut self,
@@ -84,6 +84,10 @@ impl FunctionCx<'a, 'll, 'tcx> {
             false
         };
         bx.safety = unsafe_or_not;
+        
+        if !bx.cx.tcx.sess.opts.unsafe_to_ir {
+            bx.safety = false;
+        }
 
         let funclet_bb = self.cleanup_kinds[bb].funclet_bb(bb);
         let funclet = funclet_bb.and_then(|funclet_bb| self.funclets[funclet_bb].as_ref());
