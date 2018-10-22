@@ -11,9 +11,15 @@
 #![feature(repr_simd)]
 #![feature(slice_sort_by_cached_key)]
 #![feature(test)]
+#![feature(alloc_unsafe_ptmalloc)]
+
 
 extern crate rand;
 extern crate test;
+extern crate alloc_unsafe_ptmalloc2;
+
+#[global_allocator]
+static GLOBAL: alloc_unsafe_ptmalloc2::UnsafePtmalloc = alloc_unsafe_ptmalloc2::UnsafePtmalloc;
 
 mod btree;
 mod linked_list;
