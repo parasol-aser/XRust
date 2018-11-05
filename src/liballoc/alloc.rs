@@ -37,6 +37,8 @@ extern "Rust" {
                       new_size: usize) -> *mut u8;
     #[rustc_allocator_nounwind]
     fn __rust_alloc_zeroed(size: usize, align: usize) -> *mut u8;
+    #[rustc_allocator_nounwind]
+    fn __rust_unsafe_alloc_zeroed(size: usize, align: usize) -> *mut u8;
 }
 
 /// The global memory allocator.
@@ -163,7 +165,7 @@ pub unsafe fn alloc_zeroed(layout: Layout) -> *mut u8 {
 #[stable(feature = "global_alloc", since = "1.28.0")]
 #[inline]
 pub unsafe fn unsafe_alloc_zeroed(layout: Layout) -> *mut u8 {
-    __rust_unsafe_alloc(layout.size(), layout.align())
+    __rust_unsafe_alloc_zeroed(layout.size(), layout.align())
 }
 
 #[unstable(feature = "allocator_api", issue = "32838")]

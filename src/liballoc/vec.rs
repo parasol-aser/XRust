@@ -469,11 +469,16 @@ impl<T> Vec<T> {
     /// vec.reserve(10);
     /// assert!(vec.capacity() >= 11);
     /// ```
+    #[alloc_site]
     #[stable(feature = "rust1", since = "1.0.0")]
     pub fn reserve(&mut self, additional: usize) {
         self.buf.reserve(self.len, additional);
     }
 
+    #[stable(feature = "rust1", since = "1.0.0")]
+    pub fn unsafe_reserve(&mut self, additional: usize) {
+        self.buf.reserve(self.len, additional);
+    }
     /// Reserves the minimum capacity for exactly `additional` more elements to
     /// be inserted in the given `Vec<T>`. After calling `reserve_exact`,
     /// capacity will be greater than or equal to `self.len() + additional`.

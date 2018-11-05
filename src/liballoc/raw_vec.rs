@@ -558,6 +558,14 @@ impl<T, A: Alloc> RawVec<T, A> {
             Ok(()) => { /* yay */ }
         }
     }
+
+    pub fn unsafe_reserve(&mut self, used_cap: usize, needed_extra_cap: usize) {
+        match self.unsafe_reserve_internal(used_cap, needed_extra_cap, Infallible, Amortized) {
+            Err(CapacityOverflow) => capacity_overflow(),
+            Err(AllocErr) => unreachable!(),
+            Ok(()) => { /* yay */ }
+        }
+    }
     /// Attempts to ensure that the buffer contains at least enough space to hold
     /// `used_cap + needed_extra_cap` elements. If it doesn't already have
     /// enough capacity, will reallocate in place enough space plus comfortable slack
@@ -744,6 +752,55 @@ impl<T, A: Alloc> RawVec<T, A> {
         }
     }
 
+    fn unsafe_reserve_internal(
+        &mut self,
+        used_cap: usize,
+        needed_extra_cap: usize,
+        fallibility: Fallibility,
+        strategy: ReserveStrategy,
+    ) -> Result<(), CollectionAllocErr> {
+        unsafe {
+            use alloc::AllocErr;
+
+            // NOTE: we don't early branch on ZSTs here because we want this
+            // to actually catch "asking for more than usize::MAX" in that case.
+            // If we make it past the first branch then we are guaranteed to
+            // panic.
+
+            // Don't actually need any more capacity.
+            // Wrapping in case they gave a bad `used_cap`.
+            if self.cap().wrapping_sub(used_cap) >= needed_extra_cap {
+                return Ok(());
+            }
+
+            // Nothing we can really do about these checks :(
+            let new_cap = match strategy {
+                Exact => used_cap.checked_add(needed_extra_cap).ok_or(CapacityOverflow)?,
+                Amortized => self.amortized_new_size(used_cap, needed_extra_cap)?,
+            };
+            let new_layout = Layout::array::<T>(new_cap).map_err(|_| CapacityOverflow)?;
+
+            alloc_guard(new_layout.size())?;
+
+            let res = match self.current_layout() {
+                Some(layout) => {
+                    debug_assert!(new_layout.align() == layout.align());
+                    self.a.realloc(NonNull::from(self.ptr).cast(), layout, new_layout.size())
+                }
+                None => self.a.unsafe_alloc(new_layout),
+            };
+
+            match (&res, fallibility) {
+                (Err(AllocErr), Infallible) => handle_alloc_error(new_layout),
+                _ => {}
+            }
+
+            self.ptr = res?.cast().into();
+            self.cap = new_cap;
+
+            Ok(())
+        }
+    }
 }
 
 impl<T> RawVec<T, Global> {

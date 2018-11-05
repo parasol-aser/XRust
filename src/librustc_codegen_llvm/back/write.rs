@@ -228,6 +228,7 @@ pub struct ModuleConfig {
     emit_ir: bool,
     emit_asm: bool,
     emit_obj: bool,
+    unsafe_to_ir: bool,
     // Miscellaneous flags.  These are mostly copied from command-line
     // options.
     pub verify_llvm_ir: bool,
@@ -264,6 +265,7 @@ impl ModuleConfig {
             emit_ir: false,
             emit_asm: false,
             emit_obj: false,
+            unsafe_to_ir: false,
             obj_is_bitcode: false,
             embed_bitcode: false,
             embed_bitcode_marker: false,
@@ -984,7 +986,7 @@ pub fn start_async_codegen(tcx: TyCtxt,
 
     modules_config.no_integrated_as = tcx.sess.opts.cg.no_integrated_as ||
         tcx.sess.target.target.options.no_integrated_as;
-
+    modules_config.unsafe_to_ir = sess.opts.unsafe_to_ir;
     for output_type in sess.opts.output_types.keys() {
         match *output_type {
             OutputType::Bitcode => { modules_config.emit_bc = true; }
@@ -1349,7 +1351,8 @@ fn execute_work_item(cgcx: &CodegenContext,
         debug!("llvm-optimizing {:?}", module_name);
 
         unsafe {
-            if (!config.emit_ir) && (!config.emit_bc) {
+            // output unoptimized ir to make it easier to analysis.
+            if !(config.emit_ir && config.unsafe_to_ir) {
                 optimize(cgcx, &diag_handler, &module, config, timeline)?;
             }
 

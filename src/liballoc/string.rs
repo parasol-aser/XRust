@@ -883,6 +883,12 @@ impl String {
         self.vec.reserve(additional)
     }
 
+    #[inline]
+    #[alloc_site]
+    #[stable(feature = "rust1", since = "1.0.0")]
+    pub fn unsafe_reserve(&mut self, additional: usize) {
+        self.vec.unsafe_reserve(additional)
+    }
     /// Ensures that this `String`'s capacity is `additional` bytes
     /// larger than its length.
     ///
