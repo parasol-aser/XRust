@@ -477,7 +477,7 @@ impl<T> Vec<T> {
 
     #[stable(feature = "rust1", since = "1.0.0")]
     pub fn unsafe_reserve(&mut self, additional: usize) {
-        self.buf.reserve(self.len, additional);
+        self.buf.unsafe_reserve(self.len, additional);
     }
     /// Reserves the minimum capacity for exactly `additional` more elements to
     /// be inserted in the given `Vec<T>`. After calling `reserve_exact`,
