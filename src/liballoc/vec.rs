@@ -1596,14 +1596,30 @@ pub fn from_elem<T: Clone>(elem: T, n: usize) -> Vec<T> {
     <T as SpecFromElem>::from_elem(elem, n)
 }
 
+#[doc(hidden)]
+#[stable(feature = "rust1", since = "1.0.0")]
+pub fn unsafe_from_elem<T: Clone>(elem: T, n: usize) -> Vec<T> {
+    <T as SpecFromElem>::unsafe_from_elem(elem, n)
+}
+
 // Specialization trait used for Vec::from_elem
 trait SpecFromElem: Sized {
     fn from_elem(elem: Self, n: usize) -> Vec<Self>;
+
+    fn unsafe_from_elem(elem: Self, n: usize) -> Vec<Self> {
+        Self::from_elem(elem, n)
+    }
 }
 
 impl<T: Clone> SpecFromElem for T {
     default fn from_elem(elem: Self, n: usize) -> Vec<Self> {
         let mut v = Vec::with_capacity(n);
+        v.extend_with(n, ExtendElement(elem));
+        v
+    }
+
+    default fn unsafe_from_elem(elem: Self, n: usize) -> Vec<Self> {
+        let mut v = Vec::unsafe_with_capacity(n);
         v.extend_with(n, ExtendElement(elem));
         v
     }
@@ -1786,6 +1802,11 @@ impl<T> FromIterator<T> for Vec<T> {
     fn from_iter<I: IntoIterator<Item = T>>(iter: I) -> Vec<T> {
         <Self as SpecExtend<T, I::IntoIter>>::from_iter(iter.into_iter())
     }
+
+    #[inline]
+    fn unsafe_from_iter<I: IntoIterator<Item = T>>(iter: I) -> Vec<T> {
+        <Self as SpecExtend<T, I::IntoIter>>::unsafe_from_iter(iter.into_iter())
+    }
 }
 
 #[stable(feature = "rust1", since = "1.0.0")]
@@ -1860,6 +1881,9 @@ impl<T> Extend<T> for Vec<T> {
 // Specialization trait used for Vec::from_iter and Vec::extend
 trait SpecExtend<T, I> {
     fn from_iter(iter: I) -> Self;
+    fn unsafe_from_iter(iter: I) -> Self where Self: Sized{
+        Self::from_iter(iter)
+    }
     fn spec_extend(&mut self, iter: I);
 }
 
@@ -1877,6 +1901,28 @@ impl<T, I> SpecExtend<T, I> for Vec<T>
             Some(element) => {
                 let (lower, _) = iterator.size_hint();
                 let mut vector = Vec::with_capacity(lower.saturating_add(1));
+                unsafe {
+                    ptr::write(vector.get_unchecked_mut(0), element);
+                    vector.set_len(1);
+                }
+                vector
+            }
+        };
+        <Vec<T> as SpecExtend<T, I>>::spec_extend(&mut vector, iterator);
+        vector
+    }
+
+    default fn unsafe_from_iter(mut iterator: I) -> Self {
+         // Unroll the first iteration, as the vector is going to be
+        // expanded on this iteration in every case when the iterable is not
+        // empty, but the loop in extend_desugared() is not going to see the
+        // vector being full in the few subsequent loop iterations.
+        // So we get better branch prediction.
+        let mut vector = match iterator.next() {
+            None => return Vec::new(),
+            Some(element) => {
+                let (lower, _) = iterator.size_hint();
+                let mut vector = Vec::unsafe_with_capacity(lower.saturating_add(1));
                 unsafe {
                     ptr::write(vector.get_unchecked_mut(0), element);
                     vector.set_len(1);
@@ -1944,6 +1990,32 @@ impl<T> SpecExtend<T, IntoIter<T>> for Vec<T> {
         } else {
             let mut vector = Vec::new();
             vector.spec_extend(iterator);
+            vector
+        }
+    }
+
+    fn unsafe_from_iter(iterator: IntoIter<T>) -> Self {
+        // A common case is passing a vector into a function which immediately
+        // re-collects into a vector. We can short circuit this if the IntoIter
+        // has not been advanced at all.
+        if iterator.buf.as_ptr() as *const _ == iterator.ptr {
+            unsafe {
+                let vec = Vec::from_raw_parts(iterator.buf.as_ptr(),
+                                              iterator.len(),
+                                              iterator.cap);
+                mem::forget(iterator);
+                vec
+            }
+        } else {
+            let mut vector = Vec::new();
+            let other = iterator.as_slice();
+            let count = other.len();
+            vector.unsafe_reserve(count);
+            unsafe {
+                ptr::copy_nonoverlapping((other as *const [T]) as *const T, vector.get_unchecked_mut(0), count);
+                vector.set_len(count);
+            }
+            //vector.spec_extend(iterator);
             vector
         }
     }

@@ -131,6 +131,30 @@ pub trait FromIterator<A>: Sized {
     /// ```
     #[stable(feature = "rust1", since = "1.0.0")]
     fn from_iter<T: IntoIterator<Item=A>>(iter: T) -> Self;
+
+    /// Creates a value from an iterator.
+    ///
+    /// See the [module-level documentation] for more.
+    ///
+    /// [module-level documentation]: index.html
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// use std::iter::FromIterator;
+    ///
+    /// let five_fives = std::iter::repeat(5).take(5);
+    ///
+    /// let v = Vec::from_iter(five_fives);
+    ///
+    /// assert_eq!(v, vec![5, 5, 5, 5, 5]);
+    /// ```
+    #[stable(feature = "rust1", since = "1.0.0")]
+    fn unsafe_from_iter<T: IntoIterator<Item=A>>(iter: T) -> Self {
+        Self::from_iter(iter)
+    }
 }
 
 /// Conversion into an `Iterator`.

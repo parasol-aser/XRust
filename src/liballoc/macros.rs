@@ -55,6 +55,24 @@ macro_rules! vec {
     ($($x:expr,)*) => (vec![$($x),*])
 }
 
+#[cfg(not(test))]
+#[macro_export]
+#[stable(feature = "rust1", since = "1.0.0")]
+#[allow_internal_unstable]
+macro_rules! unsafe_vec {
+    () => (
+       Vec::unsafe_with_capacity(1) //small trick to actually allocate something in unsafe region
+    );
+    ($elem:expr; $n:expr) => (
+        $crate::vec::unsafe_from_elem($elem, $n)
+    );
+    ($($x:expr),*) => (
+        <[_]>::into_vec(unsafe_box [$($x),*])
+    );
+    ($($x:expr,)*) => (vec![$($x),*])
+}
+
+
 // HACK(japaric): with cfg(test) the inherent `[T]::into_vec` method, which is
 // required for this macro definition, is not available. Instead use the
 // `slice::into_vec`  function which is only available with cfg(test)
@@ -66,6 +84,20 @@ macro_rules! vec {
     );
     ($($x:expr),*) => (
         $crate::slice::into_vec(box [$($x),*])
+    );
+    ($($x:expr,)*) => (vec![$($x),*])
+}
+
+#[cfg(test)]
+macro_rules! unsafe_vec {
+    () => (
+       Vec::unsafe_with_capacity(1) //small trick to actually allocate something in unsafe region
+    );
+    ($elem:expr; $n:expr) => (
+        $crate::vec::unsafe_from_elem($elem, $n)
+    );
+    ($($x:expr),*) => (
+        $crate::slice::into_vec(unsafe_box [$($x),*])
     );
     ($($x:expr,)*) => (vec![$($x),*])
 }
